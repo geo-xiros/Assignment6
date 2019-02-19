@@ -12,6 +12,8 @@ namespace Assignment6.Controllers
         private ApplicationDbContext _db = new ApplicationDbContext();
         public ActionResult Index()
         {
+            
+
             return View();
         }
 

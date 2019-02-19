@@ -50,5 +50,7 @@ namespace Assignment6.Models
                 .Property(e => e.Password)
                 .IsUnicode(false);
         }
+
+        //public System.Data.Entity.DbSet<Assignment6.Models.UserView> UserViews { get; set; }
     }
 }
