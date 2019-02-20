@@ -30,7 +30,7 @@ namespace Assignment6.Models
             {
                 Username = this.Username,
                 Password = this.Password,
-                Role = db.Role.Where(r => r.Id == this.RoleId).ToList()
+                Roles = db.Roles.Get().Where(r => r.Id == this.RoleId).ToList()
             };
         }
     }

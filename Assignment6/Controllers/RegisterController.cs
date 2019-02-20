@@ -12,7 +12,7 @@ namespace Assignment6.Controllers
         private ApplicationDbContext _db = new ApplicationDbContext();
         public ActionResult Index()
         {
-            ViewBag.RoleId = new SelectList(_db.Role, "Id", "Name");
+            ViewBag.RoleId = new SelectList(_db.Roles.Get(), "Id", "Name");
 
             return View();
         }

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Assignment6.Helpers
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -16,31 +18,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    @Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })
-                </li>
-                <li class="nav-item">
-                    @Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })
-                </li>
-                <li class="nav-item">
-                    @Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })
-                </li>
-                @if (Session["user"] != null)
-                {
-                    <li class="nav-item">
-                        @Html.ActionLink("Logout", "Logout", "Login", new { area = "" }, new { @class = "nav-link" })
-                    </li>
-                }
-                else
-                {
-                    <li class="nav-item">
-                        @Html.ActionLink("Register", "Index", "Register", new { area = "" }, new { @class = "nav-link" })
-                    </li>
-                    <li class="nav-item">
-                        @Html.ActionLink("Login", "Index", "Login", new { area = "" }, new { @class = "nav-link" })
-                    </li>
-                }
+                @Html.Raw( @Html.UsersLinks(Session["User"] as Assignment6.Models.User))
             </ul>
+            @Html.Partial("~/Views/Partials/_NavBarLoginLogout.cshtml");
         </div>
     </nav>
     <div class="container body-content">

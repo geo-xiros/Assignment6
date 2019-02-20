@@ -1,0 +1,17 @@
+﻿<ul class="navbar-nav ml-auto">
+    @if (Session["user"] != null)
+    {
+    <li class="nav-item">
+        @Html.ActionLink("Logout", "Logout", "Login", new { area = "" }, new { @class = "nav-link" })
+    </li>
+    }
+    else
+    {
+    <li class="nav-item">
+        @Html.ActionLink("Register", "Index", "Register", new { area = "" }, new { @class = "nav-link" })
+    </li>
+    <li class="nav-item">
+        @Html.ActionLink("Login", "Index", "Login", new { area = "" }, new { @class = "nav-link" })
+    </li>
+    }
+</ul>

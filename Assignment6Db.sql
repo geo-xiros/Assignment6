@@ -8,7 +8,6 @@ CREATE TABLE [User] (
 	Id int identity(1,1) not null,
 	Username varchar(50) not null,
 	Password varchar(50) not null,
-	Registered bit not null default(0),
 	constraint pk_User primary key (Id)
 )
 go
@@ -25,6 +24,7 @@ go
 CREATE TABLE UserRoles (
 	UserId int not null,
 	RoleId int not null,
+	Registered bit not null default(0),
 	constraint pk_UserRoles primary key (UserId,RoleId),
 	constraint fk_UserId foreign key (UserId) references [User](Id),
 	constraint fk_RoleId foreign key (RoleId) references Role(Id)
@@ -49,7 +49,9 @@ CREATE TABLE AssignedDocuments(
 )
 go
 
-INSERT INTO [User] (Username,Password,Registered) values ('geo.xiros','1234', 1)
+INSERT INTO [User] (Username,Password) values ('geo.xiros','1234')
 go
-INSERT INTO Role (Name) Values ('Architect'),('Analyst'),('Programmer'),('Tester'),('Manager')
+INSERT INTO Role (Name) Values ('Manager'),('Architect'),('Analyst'),('Programmer'),('Tester')
+go
+INSERT INTO UserRoles (UserId, RoleId, Registered) VALUES (1, 1, 1)
 go

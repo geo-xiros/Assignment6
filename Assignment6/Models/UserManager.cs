@@ -4,19 +4,68 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Web;
+using Dapper;
 
 namespace Assignment6.Models
 {
-    public class UserManager
+    public class UserManager : TableManager<User>
     {
-        ApplicationDbContext _db;
         public UserManager(ApplicationDbContext db)
         {
+            _queryParts = new Dictionary<string, string>()
+            {
+                { "FindById", "User.Id = @id" },
+                { "InsertQuery",
+                    "INSERT INTO User ([Username],[Password]) " +
+                    "VALUES (@Username, @Password)" +
+                    "SELECT * FROM [User] WHERE User.Id = @id)"},
+                { "RemoveQuery",
+                    "DELETE FROM [User] WHERE Id = @Id" },
+                { "UpdateQuery",
+                    "UPDATE [User] SET " +
+                    "[Username]=@Username, [Password]=@Password " +
+                    "WHERE Id = @Id"}
+            };
             _db = db;
         }
+        public override IEnumerable<User> Get(string queryWhere = null, object parameters = null)
+        {
+            IEnumerable<User> users = new List<User>();
+
+            _db.UsingConnection((dbCon) =>
+            {
+                var userDictionary = new Dictionary<int, User>();
+                users = dbCon.Query<User, Role, User>(
+                    "SELECT [User].Id, [User].Username, [User].Password, Role.Id, Role.Name, UserRoles.Registered " +
+                    "FROM [User] INNER JOIN UserRoles ON[User].Id = UserRoles.UserId INNER JOIN " +
+                    " Role ON UserRoles.RoleId = Role.Id" + (queryWhere == null ? string.Empty : $" WHERE {queryWhere}"),
+                    (user, role) =>
+                    {
+                        User userEntry;
+                        if (!userDictionary.TryGetValue(user.Id, out userEntry))
+                        {
+                            userEntry = user;
+                            userEntry.Roles = new List<Role>();
+                            userDictionary.Add(user.Id, user);
+                        }
+
+                        userEntry.Roles.Add(role);
+
+                        return userEntry;
+                    },
+                    splitOn: "id",
+                    param: parameters)
+                    .Distinct();
+            });
+
+            return users;
+        }
+
         public User Login(string username, string password)
         {
-            var loggedInUser = _db.User.FirstOrDefault(u => u.Username == username && u.Password == password);
+            var loggedInUser = _db.Users.Get()
+                .FirstOrDefault(u => u.Username == username && u.Password == password);
+
             if (loggedInUser != null)
             {
                 var claims = new List<Claim>(new[]
@@ -29,7 +78,7 @@ namespace Assignment6.Models
                     new Claim(ClaimTypes.Name, username)
                 });
 
-                foreach (var role in loggedInUser.Role)
+                foreach (var role in loggedInUser.Roles)
                 {
                     claims.Add(new Claim(ClaimTypes.Role, role.Name));
                 }
@@ -44,18 +93,18 @@ namespace Assignment6.Models
 
         public bool UserExists(string username)
         {
-            return _db.User.Any(u => u.Username.Equals(username, System.StringComparison.InvariantCultureIgnoreCase));
+            return _db.Users.Get().Any(u => u.Username.Equals(username, System.StringComparison.InvariantCultureIgnoreCase));
         }
 
         public bool Register(User user)
         {
             bool success;
 
-            _db.User.Add(user);
-            _db.SaveChanges();
+            _db.Users.Add(user);
             success = true;
 
             return success;
         }
     }
+
 }
