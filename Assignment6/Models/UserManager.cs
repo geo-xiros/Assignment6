@@ -44,7 +44,7 @@ namespace Assignment6.Models
 
         public bool UserExists(string username)
         {
-            return _db.User.Any(u => u.Username == username);
+            return _db.User.Any(u => u.Username.Equals(username, System.StringComparison.InvariantCultureIgnoreCase));
         }
 
         public bool Register(User user)

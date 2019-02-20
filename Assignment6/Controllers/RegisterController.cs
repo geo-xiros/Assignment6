@@ -21,6 +21,11 @@ namespace Assignment6.Controllers
         public ActionResult Register(RegisterUser registerUser)
         {
             UserManager manager = new UserManager(_db);
+            if (manager.UserExists(registerUser.Username))
+            {
+                return View("UserExists");
+            }
+
             manager.Register(registerUser.GetUser(_db));
 
             return RedirectToAction("Index","Home");
