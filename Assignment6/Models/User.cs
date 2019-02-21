@@ -8,7 +8,10 @@ namespace Assignment6.Models
 
     public partial class User
     {
-
+        public User()
+        {
+            Roles = new List<Role>();
+        }
         public int Id { get; set; }
 
         [Required]

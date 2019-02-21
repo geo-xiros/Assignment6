@@ -1,3 +1,8 @@
+use master
+go
+drop database Assignment6DB 
+go
+
 CREATE DATABASE Assignment6DB 
 GO
 
@@ -24,12 +29,22 @@ go
 CREATE TABLE UserRoles (
 	UserId int not null,
 	RoleId int not null,
-	Registered bit not null default(0),
 	constraint pk_UserRoles primary key (UserId,RoleId),
-	constraint fk_UserId foreign key (UserId) references [User](Id),
-	constraint fk_RoleId foreign key (RoleId) references Role(Id)
+	constraint fk_UserRolesUserId foreign key (UserId) references [User](Id),
+	constraint fk_UserRolesRoleId foreign key (RoleId) references Role(Id)
 )
 go
+
+CREATE TABLE Registrations (
+	Id int Identity(1,1) not null,
+	UserId int not null,
+	RoleId int not null,
+	RegisteredAt datetime not null,
+	Status varchar(10) not null,
+	constraint pk_Registrations primary key (Id),
+	constraint fk_RegistrationsUserId foreign key (UserId) references [User](Id),
+	constraint fk_RegistrationsRoleId foreign key (RoleId) references Role(Id)
+)
 
 CREATE TABLE Document (
 	Id int Identity(1,1) not null,
@@ -53,5 +68,6 @@ INSERT INTO [User] (Username,Password) values ('geo.xiros','1234')
 go
 INSERT INTO Role (Name) Values ('Manager'),('Architect'),('Analyst'),('Programmer'),('Tester')
 go
-INSERT INTO UserRoles (UserId, RoleId, Registered) VALUES (1, 1, 1)
+
+INSERT INTO UserRoles (UserId, RoleId) VALUES (1, 1)
 go

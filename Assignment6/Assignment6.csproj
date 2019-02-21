@@ -159,9 +159,11 @@
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\AssignedDocuments.cs" />
     <Compile Include="Models\Document.cs" />
+    <Compile Include="Models\Registration.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\RolesManager.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\RegistrationManager.cs" />
     <Compile Include="Models\UserManager.cs" />
     <Compile Include="Models\ViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -18,17 +18,43 @@ namespace Assignment6.Controllers
         }
 
         [HttpPost]
-        public ActionResult Register(RegisterUser registerUser)
+        public ActionResult Register(Registration registrationUser)
         {
-            UserManager manager = new UserManager(_db);
-            if (manager.UserExists(registerUser.Username))
+            UserManager userManager = new UserManager(_db);
+            User user;
+            if (!userManager.UserExists(registrationUser.Username, out user))
             {
-                return View("UserExists");
+                user = userManager.Add(
+                    new Models.User()
+                    {
+                        Username = registrationUser.Username,
+                        Password = registrationUser.Password
+                    });
+
             }
 
-            manager.Register(registerUser.GetUser(_db));
+            Role role = user.Roles.Where(r => r.Id == registrationUser.RoleId).FirstOrDefault();
+            if (role != null)
+            {
+                return View($"Allready Approved As {role.Name}");
+            }
 
-            return RedirectToAction("Index","Home");
+            RegistrationManager registrationManager = new RegistrationManager(_db);
+            if (registrationManager.Get().Any(u=> 
+                u.UserId==user.Id && 
+                u.RoleId==registrationUser.RoleId && 
+                u.Status.Equals("Pending")))
+            {
+                return View($"Allready Pending");
+            }
+
+            registrationUser.UserId = user.Id;
+            registrationUser.RegisteredAt = DateTime.Now;
+            registrationUser.Status = "Pending";
+
+            registrationManager.Add(registrationUser);
+
+            return RedirectToAction("Index", "Home");
         }
 
     }

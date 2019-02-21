@@ -6,14 +6,15 @@ using System.Web;
 
 namespace Assignment6.ViewModels
 {
-    public class UsersRegistrations
+    public class UserRegistration
     {
         public int Id { get; set; }
 
         public string Username { get; set; }
 
-        public bool Registered { get; set; }
-
-        public virtual ICollection<Role> Role { get; set; }
+        public int UserId { get; set; }
+        public int RoleId { get; set; }
+        public DateTime RegisteredAt { get; set; }
+        public string Status { get; set; }
     }
 }

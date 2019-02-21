@@ -14,11 +14,11 @@ namespace Assignment6.Models
         {
             _queryParts = new Dictionary<string, string>()
             {
-                { "FindById", "User.Id = @id" },
+                { "FindById", "[User].Id = @id" },
                 { "InsertQuery",
-                    "INSERT INTO User ([Username],[Password]) " +
-                    "VALUES (@Username, @Password)" +
-                    "SELECT * FROM [User] WHERE User.Id = @id)"},
+                    "INSERT INTO [User] ([Username],[Password]) " +
+                    "VALUES (@Username, @Password) " +
+                    "SELECT * FROM [User] WHERE [User].Id = (SELECT SCOPE_IDENTITY())"},
                 { "RemoveQuery",
                     "DELETE FROM [User] WHERE Id = @Id" },
                 { "UpdateQuery",
@@ -36,8 +36,8 @@ namespace Assignment6.Models
             {
                 var userDictionary = new Dictionary<int, User>();
                 users = dbCon.Query<User, Role, User>(
-                    "SELECT [User].Id, [User].Username, [User].Password, Role.Id, Role.Name, UserRoles.Registered " +
-                    "FROM [User] INNER JOIN UserRoles ON[User].Id = UserRoles.UserId INNER JOIN " +
+                    "SELECT [User].Id, [User].Username, [User].Password, Role.Id, Role.Name " +
+                    "FROM [User] LEFT JOIN UserRoles ON [User].Id = UserRoles.UserId LEFT JOIN " +
                     " Role ON UserRoles.RoleId = Role.Id" + (queryWhere == null ? string.Empty : $" WHERE {queryWhere}"),
                     (user, role) =>
                     {
@@ -49,7 +49,7 @@ namespace Assignment6.Models
                             userDictionary.Add(user.Id, user);
                         }
 
-                        userEntry.Roles.Add(role);
+                        if (role != null) userEntry.Roles.Add(role);
 
                         return userEntry;
                     },
@@ -91,9 +91,10 @@ namespace Assignment6.Models
             return loggedInUser;
         }
 
-        public bool UserExists(string username)
+        public bool UserExists(string username, out User user)
         {
-            return _db.Users.Get().Any(u => u.Username.Equals(username, System.StringComparison.InvariantCultureIgnoreCase));
+            user = Get("Username=@username", new { username }).FirstOrDefault();
+            return user != null;
         }
 
         public bool Register(User user)
