@@ -34,10 +34,27 @@ namespace Assignment6.Controllers
 
             return View();
         }
-
-        public string  Tasks(string task,string role)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="status">Pending, Completed</param>
+        /// <param name="role">Manager, Developer...</param>
+        /// <returns></returns>
+        public ActionResult Tasks(string status,string role)
         {
-            return $"{task} {role}";
+            if (!HttpContext.User.IsInRole(role))
+            {
+                return Redirect("/Home");
+            }
+
+            RegistrationManager registrationManager = new RegistrationManager(_db);
+
+            IEnumerable<Registration> usersRegistrations = registrationManager.Get("Status=@status", new { status });
+            ViewBag.Title = $"{status} Tasks for {role}";
+            ViewBag.Status = status;
+            ViewBag.Registered = status == "Completed";
+            return View("UsersRegistrations", usersRegistrations);
         }
     }
 }
+

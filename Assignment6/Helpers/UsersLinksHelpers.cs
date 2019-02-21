@@ -22,18 +22,18 @@ namespace Assignment6.Helpers
 
             return html;
         }
-        private static string GetDropdownLinks(string task, IEnumerable<Role> roles)
+        private static string GetDropdownLinks(string status, IEnumerable<Role> roles)
         {
             string html =
                 "<li class='nav-item dropdown'>" +
-                $"<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown{task}' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
-                $"{task} Tasks" +
+                $"<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown{status}' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
+                $"{status} Tasks" +
                 "</a>" +
-                $"<div class='dropdown-menu' aria-labelledby='navbarDropdown{task}'>";
+                $"<div class='dropdown-menu' aria-labelledby='navbarDropdown{status}'>";
 
             foreach (var role in roles)
             {
-                html += $"<a class='dropdown-item' href='/Home/Tasks/{task}/{role.Name}'>{role.Name}</a>";
+                html += $"<a class='dropdown-item' href='/Home/Tasks/{status}/{role.Name}'>{role.Name}</a>";
             }
 
             html += "</div></li>";

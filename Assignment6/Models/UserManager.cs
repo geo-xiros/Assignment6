@@ -62,7 +62,7 @@ namespace Assignment6.Models
         }
         private bool TryGetUser(string username, string password, out User user)
         {
-            user = _db.Users.Get()
+            user = Get()
                 .FirstOrDefault(u => u.Username == username && u.Password == password);
             return user != null;
         }
@@ -103,12 +103,7 @@ namespace Assignment6.Models
 
         public bool Register(User user)
         {
-            bool success;
-
-            _db.Users.Add(user);
-            success = true;
-
-            return success;
+            return Add(user) != null;
         }
     }
 
