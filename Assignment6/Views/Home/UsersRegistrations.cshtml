@@ -45,13 +45,13 @@
                     @Html.DisplayFor(modelItem => item.Status)
                 </th>
             }
-            @if (ViewBag.Pending)
-            {
-                <td>
-                    @Html.ActionLink("Approve", "Approve", new { id = item.Id }) |
-                    @Html.ActionLink("Decline", "Decline", new { id = item.Id })
-                </td>
-            }
+            <td>
+                @if (ViewBag.Pending)
+                {
+                    @Html.ActionLink("Approve", "Approve", new { id = item.Id }, htmlAttributes: new { @class = "btn btn-success" })
+                }
+                @Html.ActionLink("Decline", "Decline", new { id = item.Id }, htmlAttributes: new { @class = "btn btn-danger" })
+            </td>
         </tr>
     }
 
