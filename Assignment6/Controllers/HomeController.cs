@@ -34,7 +34,7 @@ namespace Assignment6.Controllers
             ViewBag.Status = status;
             ViewBag.Pending = status == "Pending";
 
-            return View("UsersRegistrations", usersRegistrations);
+            return View("UsersRegistrations", usersRegistrations.OrderByDescending(r=>r.RegisteredAt));
         }
 
         public ActionResult Approve(int? id)

@@ -14,13 +14,12 @@
         <th>
             @Html.DisplayNameFor(model => model.Role)
         </th>
-        @if (ViewBag.Pending)
-        {
-            <th>
-                @Html.DisplayNameFor(model => model.RegisteredAt)
-            </th>
-        }
-        else
+        <th>
+            @Html.DisplayNameFor(model => model.RegisteredAt)
+        </th>
+
+        @if (!ViewBag.Pending)
+
         {
             <th>
                 @Html.DisplayNameFor(model => model.Status)
@@ -37,13 +36,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Role)
             </td>
-            @if (ViewBag.Pending)
-            {
-                <td>
-                    @Html.DisplayFor(modelItem => item.RegisteredAt)
-                </td>
-            }
-            else
+            <td>
+                @Html.DisplayFor(modelItem => item.RegisteredAt)
+            </td>
+            @if (!ViewBag.Pending)
             {
                 <th>
                     @Html.DisplayFor(modelItem => item.Status)
