@@ -47,6 +47,13 @@ namespace Assignment6.Controllers
                     });
 
             }
+            else
+            {
+                if (registrationUser.Password != user.Password)
+                {
+                    return $"Wrong User Password.";
+                }
+            }
 
             Role role = user.Roles.FirstOrDefault(r => r.Id == registrationUser.RoleId);
             if (role != null)
