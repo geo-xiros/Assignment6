@@ -54,6 +54,8 @@ namespace Assignment6.Controllers
             registration.Status = "Declined";
             _db.Registrations.Update(registration);
 
+            _db.Users.RemoveUserRole(registration.UserId, registration.RoleId);
+
             return Redirect(Request.UrlReferrer.ToString());
         }
 
