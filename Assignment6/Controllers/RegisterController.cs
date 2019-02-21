@@ -20,7 +20,26 @@ namespace Assignment6.Controllers
         [HttpPost]
         public ActionResult Register(Registration registrationUser)
         {
-            UserManager userManager = new UserManager(_db);
+            RegistrationFacade registrationFacade = new RegistrationFacade(_db);
+
+            ViewBag.Title = registrationFacade.Register(registrationUser);
+            return View("Message");
+        }
+
+    }
+    public class RegistrationFacade
+    {
+        private ApplicationDbContext _db;
+        private UserManager userManager;
+        private RegistrationManager registrationManager;
+        public RegistrationFacade(ApplicationDbContext db)
+        {
+            _db = db;
+            userManager = new UserManager(_db);
+            registrationManager = new RegistrationManager(_db);
+        }
+        public string Register(Registration registrationUser)
+        {
             User user;
             if (!userManager.UserExists(registrationUser.Username, out user))
             {
@@ -36,16 +55,15 @@ namespace Assignment6.Controllers
             Role role = user.Roles.Where(r => r.Id == registrationUser.RoleId).FirstOrDefault();
             if (role != null)
             {
-                return View($"Allready Approved As {role.Name}");
+                return $"Allready Approved As {role.Name}";
             }
 
-            RegistrationManager registrationManager = new RegistrationManager(_db);
-            if (registrationManager.Get().Any(u=> 
-                u.UserId==user.Id && 
-                u.RoleId==registrationUser.RoleId && 
+            if (registrationManager.Get().Any(u =>
+                u.UserId == user.Id &&
+                u.RoleId == registrationUser.RoleId &&
                 u.Status.Equals("Pending")))
             {
-                return View($"Allready Pending");
+                return $"Allready Pending";
             }
 
             registrationUser.UserId = user.Id;
@@ -54,8 +72,7 @@ namespace Assignment6.Controllers
 
             registrationManager.Add(registrationUser);
 
-            return RedirectToAction("Index", "Home");
+            return $"User registered Pending";
         }
-
     }
 }

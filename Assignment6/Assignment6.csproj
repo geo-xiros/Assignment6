@@ -249,7 +249,7 @@
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Login\Success.cshtml" />
     <Content Include="Views\Register\Index.cshtml" />
-    <Content Include="Views\Register\UserExists.cshtml" />
+    <Content Include="Views\Register\Message.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
