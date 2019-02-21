@@ -60,11 +60,15 @@ namespace Assignment6.Models
 
             return users;
         }
-
+        private bool TryGetUser(string username, string password, out User user)
+        {
+            user = _db.Users.Get()
+                .FirstOrDefault(u => u.Username == username && u.Password == password);
+            return user != null;
+        }
         public User Login(string username, string password)
         {
-            var loggedInUser = _db.Users.Get()
-                .FirstOrDefault(u => u.Username == username && u.Password == password);
+            TryGetUser(username, password, out User loggedInUser);
 
             if (loggedInUser != null)
             {

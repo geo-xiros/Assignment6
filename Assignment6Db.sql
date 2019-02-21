@@ -35,15 +35,15 @@ CREATE TABLE UserRoles (
 )
 go
 
-CREATE TABLE Registrations (
+CREATE TABLE Registration (
 	Id int Identity(1,1) not null,
 	UserId int not null,
 	RoleId int not null,
 	RegisteredAt datetime not null,
 	Status varchar(10) not null,
-	constraint pk_Registrations primary key (Id),
-	constraint fk_RegistrationsUserId foreign key (UserId) references [User](Id),
-	constraint fk_RegistrationsRoleId foreign key (RoleId) references Role(Id)
+	constraint pk_Registration primary key (Id),
+	constraint fk_RegistrationUserId foreign key (UserId) references [User](Id),
+	constraint fk_RegistrationRoleId foreign key (RoleId) references Role(Id)
 )
 
 CREATE TABLE Document (

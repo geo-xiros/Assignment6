@@ -34,5 +34,10 @@ namespace Assignment6.Controllers
 
             return View();
         }
+
+        public string  Tasks(string task,string role)
+        {
+            return $"{task} {role}";
+        }
     }
 }

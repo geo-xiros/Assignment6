@@ -31,17 +31,19 @@ namespace Assignment6.Controllers
     {
         private ApplicationDbContext _db;
         private UserManager userManager;
+        private RoleManager roleManager;
         private RegistrationManager registrationManager;
         public RegistrationFacade(ApplicationDbContext db)
         {
             _db = db;
             userManager = new UserManager(_db);
+            roleManager = new RoleManager(_db);
             registrationManager = new RegistrationManager(_db);
         }
         public string Register(Registration registrationUser)
         {
-            User user;
-            if (!userManager.UserExists(registrationUser.Username, out user))
+
+            if (!userManager.UserExists(registrationUser.Username, out User user))
             {
                 user = userManager.Add(
                     new Models.User()
@@ -52,18 +54,20 @@ namespace Assignment6.Controllers
 
             }
 
-            Role role = user.Roles.Where(r => r.Id == registrationUser.RoleId).FirstOrDefault();
+            Role role = user.Roles.FirstOrDefault(r => r.Id == registrationUser.RoleId);
             if (role != null)
             {
                 return $"Allready Approved As {role.Name}";
             }
+
+            role = roleManager.Get("Id=@RoleId", new { registrationUser.RoleId }).FirstOrDefault();
 
             if (registrationManager.Get().Any(u =>
                 u.UserId == user.Id &&
                 u.RoleId == registrationUser.RoleId &&
                 u.Status.Equals("Pending")))
             {
-                return $"Allready Pending";
+                return $"Allready Pending Role {role.Name} to be approved";
             }
 
             registrationUser.UserId = user.Id;
@@ -72,7 +76,7 @@ namespace Assignment6.Controllers
 
             registrationManager.Add(registrationUser);
 
-            return $"User registered Pending";
+            return $"User registered Pending Role {role.Name} to be approved";
         }
     }
 }

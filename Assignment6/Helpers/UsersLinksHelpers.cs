@@ -12,16 +12,34 @@ namespace Assignment6.Helpers
         public static string UsersLinks(this HtmlHelper helper, User user)
         {
             string html = string.Empty;
-            if (user==null)
+            if (user == null)
             {
                 return html;
             }
 
-            foreach (var role in user.Roles)
+            html += GetDropdownLinks("Pending", user.Roles);
+            html += GetDropdownLinks("Completed", user.Roles);
+
+            return html;
+        }
+        private static string GetDropdownLinks(string task, IEnumerable<Role> roles)
+        {
+            string html =
+                "<li class='nav-item dropdown'>" +
+                $"<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown{task}' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
+                $"{task} Tasks" +
+                "</a>" +
+                $"<div class='dropdown-menu' aria-labelledby='navbarDropdown{task}'>";
+
+            foreach (var role in roles)
             {
-                html += $"<li class='nav-item'><a class='nav-link' href='/Home/{role.Name}'>{role.Name}</a></li>";
+                html += $"<a class='dropdown-item' href='/Home/Tasks/{task}/{role.Name}'>{role.Name}</a>";
             }
+
+            html += "</div></li>";
             return html;
         }
     }
 }
+
+
