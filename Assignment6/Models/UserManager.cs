@@ -100,11 +100,23 @@ namespace Assignment6.Models
             user = Get("Username=@username", new { username }).FirstOrDefault();
             return user != null;
         }
-
-        public bool Register(User user)
+        public bool AddUserRole(int userId, int roleId)
         {
-            return Add(user) != null;
+            int affectedRows = 0;
+
+            _db.UsingConnection((dbCon) =>
+            {
+                affectedRows = dbCon.Execute("INSERT INTO UserRoles ([UserId], [RoleId]) Values (@userId, @roleId)",
+                    new
+                    {
+                        userId,
+                        roleId
+                    });
+            });
+
+            return affectedRows != 0;
         }
     }
 
 }
+
