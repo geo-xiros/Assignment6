@@ -14,9 +14,18 @@
         <th>
             @Html.DisplayNameFor(model => model.Role)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.RegisteredAt)
-        </th>
+        @if (ViewBag.Pending)
+        {
+            <th>
+                @Html.DisplayNameFor(model => model.RegisteredAt)
+            </th>
+        }
+        else
+        {
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+        }
     </tr>
 
     @foreach (var item in Model)
@@ -28,10 +37,19 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Role)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RegisteredAt)
-            </td>
-            @if (!ViewBag.Registered)
+            @if (ViewBag.Pending)
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.RegisteredAt)
+                </td>
+            }
+            else
+            {
+                <th>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </th>
+            }
+            @if (ViewBag.Pending)
             {
                 <td>
                     @Html.ActionLink("Approve", "Approve", new { id = item.Id }) |

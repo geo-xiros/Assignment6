@@ -9,14 +9,16 @@ namespace Assignment6.Helpers
 {
     public static class UsersLinksHelpers
     {
-        public static string UsersLinks(this HtmlHelper helper, User user)
+        public static string UsersLinks(this HtmlHelper helper)
         {
             string html = string.Empty;
+            User user = helper.ViewContext.HttpContext.Session["User"] as User;
+
             if (user == null)
             {
                 return html;
             }
-
+            
             html += GetDropdownLinks("Pending", user.Roles);
             html += GetDropdownLinks("Completed", user.Roles);
 

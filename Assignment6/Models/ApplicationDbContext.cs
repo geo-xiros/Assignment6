@@ -17,11 +17,10 @@ namespace Assignment6.Models
         public ApplicationDbContext()
         {
             _connectionString = ConfigurationManager.ConnectionStrings["ApplicationDbContext"].ConnectionString;
-            //Court = new CourtManager(this);
-            //Branch = new BranchManager(this);
+
             Users = new UserManager(this);
             Roles = new RoleManager(this);
-            //Facility = new FacilityManager(this);
+            Registrations = new RegistrationManager(this);
         }
         public void UsingConnection(Action<SqlConnection> action)
         {
@@ -41,6 +40,7 @@ namespace Assignment6.Models
 
         public UserManager Users { get; set; }
         public RoleManager Roles { get; set; }
+        public RegistrationManager Registrations { get; set; }
     }
 
     public abstract class TableManager<T> : IDatabaseActions<T>

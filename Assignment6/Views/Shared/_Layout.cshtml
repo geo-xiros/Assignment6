@@ -18,7 +18,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                @Html.Raw( @Html.UsersLinks(Session["User"] as Assignment6.Models.User))
+                @Html.Raw( @Html.UsersLinks())
             </ul>
             @Html.Partial("~/Views/Partials/_NavBarLoginLogout.cshtml");
         </div>

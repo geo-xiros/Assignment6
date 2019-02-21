@@ -40,20 +40,50 @@ namespace Assignment6.Controllers
         /// <param name="status">Pending, Completed</param>
         /// <param name="role">Manager, Developer...</param>
         /// <returns></returns>
-        public ActionResult Tasks(string status,string role)
+        public ActionResult Tasks(string status, string role)
         {
             if (!HttpContext.User.IsInRole(role))
             {
                 return Redirect("/Home");
             }
 
-            RegistrationManager registrationManager = new RegistrationManager(_db);
+            var usersRegistrations = GetRegistrations(status == "Pending" ? "Status='Pending'" : "Status<>'Pending'");
 
-            IEnumerable<Registration> usersRegistrations = registrationManager.Get("Status=@status", new { status });
             ViewBag.Title = $"{status} Tasks for {role}";
             ViewBag.Status = status;
-            ViewBag.Registered = status == "Completed";
+            ViewBag.Pending = status == "Pending";
+
             return View("UsersRegistrations", usersRegistrations);
+        }
+
+        public ActionResult Approve(int? id)
+        {
+            Registration registration = _db.Registrations.Get("Registration.Id=@id", new { id }).FirstOrDefault();
+            registration.Status = "Approved";
+            _db.Registrations.Update(registration);
+
+            // TODO
+            // Insert UserRoles Record with UserId, RoleId
+
+            return Redirect(Request.UrlReferrer.ToString());
+        }
+        public ActionResult Decline(int? id)
+        {
+            Registration registration = _db.Registrations.Get("Registration.Id=@id", new { id }).FirstOrDefault();
+            registration.Status = "Declined";
+            _db.Registrations.Update(registration);
+
+            // TODO
+            // Insert UserRoles Record with UserId, RoleId
+            return Redirect(Request.UrlReferrer.ToString());
+        }
+
+        private IEnumerable<Registration> GetRegistrations(string statusFilter)
+        {
+            RegistrationManager registrationManager = new RegistrationManager(_db);
+
+            return registrationManager.Get(statusFilter);
+
         }
     }
 }
