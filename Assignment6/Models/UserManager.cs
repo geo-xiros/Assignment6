@@ -60,41 +60,55 @@ namespace Assignment6.Models
 
             return users;
         }
-        private bool TryGetUser(string username, string password, out User user)
+        /// <summary>
+        /// Finds a User using parameters Username and Password
+        /// on success the user is authenticated
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="loggedInUser"></param>
+        /// <returns>true if user is authenticated with at least <string>one role</string>strong></returns>
+        public bool Login(string username, string password, out User loggedInUser)
         {
-            user = Get()
+            loggedInUser = Get()
                 .FirstOrDefault(u => u.Username == username && u.Password == password);
-            return user != null;
-        }
-        public User Login(string username, string password)
-        {
-            TryGetUser(username, password, out User loggedInUser);
 
-            if (loggedInUser != null)
+            if (loggedInUser == null)
             {
-                var claims = new List<Claim>(new[]
-                {
+                return false;
+            }
+
+            if (loggedInUser.Roles.Count == 0)
+            {
+                return false;
+            }
+
+            Authenticate(loggedInUser);
+
+            return true;
+        }
+        private void Authenticate(User loggedInUser)
+        {
+            var claims = new List<Claim>(new[]
+            {
                     // adding following 2 claim just for supporting default antiforgery provider
-                    new Claim(ClaimTypes.NameIdentifier, username),
+                    new Claim(ClaimTypes.NameIdentifier, loggedInUser.Username),
                     new Claim(
                         "http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider",
                         "ASP.NET Identity", "http://www.w3.org/2001/XMLSchema#string"),
-                    new Claim(ClaimTypes.Name, username)
+                    new Claim(ClaimTypes.Name, loggedInUser.Username)
                 });
 
-                foreach (var role in loggedInUser.Roles)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, role.Name));
-                }
-
-                var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
-
-                HttpContext.Current.GetOwinContext().Authentication.SignIn(
-                    new AuthenticationProperties { IsPersistent = false }, identity);
+            foreach (var role in loggedInUser.Roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role.Name));
             }
-            return loggedInUser;
-        }
 
+            var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
+
+            HttpContext.Current.GetOwinContext().Authentication.SignIn(
+                new AuthenticationProperties { IsPersistent = false }, identity);
+        }
         public bool UserExists(string username, out User user)
         {
             user = Get("Username=@username", new { username }).FirstOrDefault();

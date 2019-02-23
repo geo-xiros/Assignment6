@@ -4,9 +4,8 @@ namespace Assignment6.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
-    public partial class AssignedDocuments
+    public partial class DocumentAssign
     {
         public int Id { get; set; }
 
@@ -14,10 +13,9 @@ namespace Assignment6.Models
 
         public int RoleId { get; set; }
 
-        public bool Completed { get; set; }
+        public int UserId { get; set; }
 
-        public virtual Document Document { get; set; }
+        //public bool Completed { get; set; }
 
-        public virtual Role Role { get; set; }
     }
 }

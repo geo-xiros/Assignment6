@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web;
 
@@ -13,8 +14,14 @@ namespace Assignment6.Models
         public string Password { get; set; }
         public int RoleId { get; set; }
         public string Role { get; set; }
-        public DateTime RegisteredAt { get; set; }
+        
+        public int? RegisteredByUserId { get; set; }
+        [DisplayName("Registered By")]
+        public string RegisteredByUsername { get; set; }
+
+        [DisplayName("Registration Status")]
         public string  Status { get; set; }
+        
     }
 
 }

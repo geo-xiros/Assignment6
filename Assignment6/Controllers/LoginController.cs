@@ -12,7 +12,7 @@ namespace Assignment6.Controllers
         private ApplicationDbContext _db = new ApplicationDbContext();
         public ActionResult Index()
         {
-            
+
 
             return View();
         }
@@ -21,23 +21,31 @@ namespace Assignment6.Controllers
         public ActionResult Login(User user)
         {
             UserManager manager = new UserManager(_db);
-            var loggedInUser = manager.Login(user.Username, user.Password);
+            User loggedInUser;
 
-            if (loggedInUser != null)
+            if (!manager.Login(user.Username, user.Password, out loggedInUser))
             {
-                Session["user"] = loggedInUser;
-                return View("Success", loggedInUser);
+                if (loggedInUser == null)
+                {
+                    ModelState.AddModelError("Username", "Wrong username or password.");
+                }
+                else
+                {
+                    ModelState.AddModelError("Username", "Pending user role approval.");
+                }
+
+                return View("Index", user);
             }
-            else
-            {
-                return RedirectToAction("Index");
-            }
+
+            Session["user"] = loggedInUser;
+            return View("Success", loggedInUser);
         }
 
         public ActionResult Logout()
         {
             Session.Clear();
             Session.Abandon();
+            Request.GetOwinContext().Authentication.SignOut();
             return RedirectToAction("Index", "Home");
         }
     }

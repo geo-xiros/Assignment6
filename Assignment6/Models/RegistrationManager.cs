@@ -16,14 +16,14 @@ namespace Assignment6.Models
             {
                 { "FindById", "Registration.Id = @Id" },
                 { "InsertQuery",
-                    "INSERT INTO Registration ([UserId],[RoleId],[RegisteredAt],[Status]) " +
-                    "VALUES (@UserId,@RoleId,@RegisteredAt,@Status) " +
+                    "INSERT INTO Registration ([UserId],[RoleId],[RegisteredByUserId],[Status]) " +
+                    "VALUES (@UserId,@RoleId,@RegisteredByUserId,@Status) " +
                     "SELECT * FROM Registration WHERE Registration.Id = (SELECT SCOPE_IDENTITY())"},
                 { "RemoveQuery",
                     "DELETE FROM Registration WHERE Id = @Id" },
                 { "UpdateQuery",
                     "UPDATE Registration SET " +
-                    "[UserId]=@UserId,[RoleId]=@RoleId,[RegisteredAt]=@RegisteredAt,[Status]=@Status " +
+                    "[UserId]=@UserId,[RoleId]=@RoleId,[RegisteredByUserId]=@RegisteredByUserId,[Status]=@Status " +
                     "WHERE Id = @Id"}
             };
             _db = db;
@@ -35,10 +35,12 @@ namespace Assignment6.Models
             _db.UsingConnection((dbCon) =>
             {
                 registrations = dbCon.Query<Registration>(
-                    "SELECT Registration.*, [User].Username, Role.Name AS Role " +
-                    "FROM Registration "+
+                    "SELECT Registration.*, [User].Username, Role.Name AS Role, Manager.Username AS RegisteredByUsername " +
+                    "FROM Registration " +
                     "INNER JOIN [User] ON Registration.UserId = [User].Id " +
-                    "INNER JOIN Role ON Registration.RoleId = Role.Id " + (queryWhere == null ? string.Empty : $" WHERE {queryWhere}"),
+                    "INNER JOIN Role ON Registration.RoleId = Role.Id " +
+                    "LEFT JOIN [User] Manager ON Registration.RegisteredByUserId = Manager.Id " +
+                    (queryWhere == null ? string.Empty : $" WHERE {queryWhere}"),
                     parameters);
             });
 

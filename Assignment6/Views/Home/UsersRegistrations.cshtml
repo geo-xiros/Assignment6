@@ -1,11 +1,8 @@
 ﻿@model IEnumerable<Assignment6.Models.Registration>
-
 @{
     ViewBag.Title = "Users Registrations";
 }
-
 <h2>@ViewBag.Status Users Registrations</h2>
-
 <table class="table">
     <tr>
         <th>
@@ -14,19 +11,22 @@
         <th>
             @Html.DisplayNameFor(model => model.Role)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.RegisteredAt)
-        </th>
-
-        @if (!ViewBag.Pending)
-
+        @if (ViewBag.Pending)
         {
+            <th>
+                Action
+            </th>
+        }
+        else
+        {
+            <th>
+                @Html.DisplayNameFor(model => model.RegisteredByUsername)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Status)
             </th>
         }
     </tr>
-
     @foreach (var item in Model)
     {
         <tr>
@@ -36,23 +36,23 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Role)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RegisteredAt)
-            </td>
-            @if (!ViewBag.Pending)
+            @if (ViewBag.Pending)
             {
+                <td>
+                    @Html.ActionLink("Approve", "Approve", new { id = item.Id }, htmlAttributes: new { @class = "btn btn-success" })
+                    @Html.ActionLink("Decline", "Decline", new { id = item.Id }, htmlAttributes: new { @class = "btn btn-danger" })
+                </td>
+
+            }
+            else
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.RegisteredByUsername)
+                </td>
                 <th>
                     @Html.DisplayFor(modelItem => item.Status)
                 </th>
             }
-            <td>
-                @if (ViewBag.Pending)
-                {
-                    @Html.ActionLink("Approve", "Approve", new { id = item.Id }, htmlAttributes: new { @class = "btn btn-success" })
-                }
-                @Html.ActionLink("Decline", "Decline", new { id = item.Id }, htmlAttributes: new { @class = "btn btn-danger" })
-            </td>
         </tr>
     }
-
 </table>

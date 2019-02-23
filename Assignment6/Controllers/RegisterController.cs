@@ -72,7 +72,6 @@ namespace Assignment6.Controllers
             }
 
             registrationUser.UserId = user.Id;
-            registrationUser.RegisteredAt = DateTime.Now;
             registrationUser.Status = "Pending";
 
             _db.Registrations.Add(registrationUser);

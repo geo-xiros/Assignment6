@@ -13,25 +13,25 @@ CREATE TABLE [User] (
 	Id int identity(1,1) not null,
 	Username varchar(50) not null,
 	Password varchar(50) not null,
-	constraint pk_User primary key (Id)
+	constraint PK_User primary key (Id)
 )
 go
 
 CREATE TABLE Role (
 	Id int Identity(1,1) not null,
 	Name varchar(50) not null,
-	constraint pk_Role Primary key (Id)
+	constraint PK_Role Primary key (Id)
 )
 
-CREATE UNIQUE INDEX Ix_RoleNameUnique on Role(Name)
+CREATE UNIQUE INDEX IX_RoleNameUnique on Role(Name)
 go
 
 CREATE TABLE UserRoles (
 	UserId int not null,
 	RoleId int not null,
-	constraint pk_UserRoles primary key (UserId,RoleId),
-	constraint fk_UserRolesUserId foreign key (UserId) references [User](Id),
-	constraint fk_UserRolesRoleId foreign key (RoleId) references Role(Id)
+	constraint PK_UserRoles primary key (UserId,RoleId),
+	constraint FK_UserRolesUserId foreign key (UserId) references [User](Id),
+	constraint FK_UserRolesRoleId foreign key (RoleId) references Role(Id)
 )
 go
 
@@ -39,28 +39,31 @@ CREATE TABLE Registration (
 	Id int Identity(1,1) not null,
 	UserId int not null,
 	RoleId int not null,
-	RegisteredAt datetime not null,
+	RegisteredByUserId int null,
 	Status varchar(10) not null,
-	constraint pk_Registration primary key (Id),
-	constraint fk_RegistrationUserId foreign key (UserId) references [User](Id),
-	constraint fk_RegistrationRoleId foreign key (RoleId) references Role(Id)
+	constraint PK_Registration primary key (Id),
+	constraint FK_RegistrationUserId foreign key (UserId) references [User](Id),
+	constraint FK_RegistrationRegisteredByUserId foreign key (RegisteredByUserId) references [User](Id),
+	constraint FK_RegistrationRoleId foreign key (RoleId) references Role(Id)
 )
 
 CREATE TABLE Document (
 	Id int Identity(1,1) not null,
-	Name varchar(50) not null,
+	Title varchar(50) not null,
+	Body Text null,
 	constraint pk_Document Primary key (Id)
 )
 go
 
-CREATE TABLE AssignedDocuments(
+CREATE TABLE DocumentAssign(
 	Id int identity(1,1) not null,
 	DocumentId int not null,
 	RoleId int not null,
-	Completed bit not null default(0),
-	constraint pk_AssignedDocuments primary key (Id),
-	constraint fk_AssignedDocumentsDocumentId foreign key (DocumentId) references Document(Id),
-	constraint fk_AssignedDocumentsRoleId foreign key (RoleId) references Role(Id)
+	UserId int null,
+	constraint PK_DocumentAssign primary key (Id),
+	constraint FK_DocumentAssignDocumentId foreign key (DocumentId) references Document(Id),
+	constraint FK_DocumentAssignUserId foreign key (UserId) references [User](Id),
+	constraint FK_DocumentAssignRoleId foreign key (RoleId) references Role(Id)
 )
 go
 

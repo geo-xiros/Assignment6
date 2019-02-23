@@ -4,17 +4,20 @@ namespace Assignment6.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
-    public partial class Document
+    public  class Document
     {
-
+        public Document()
+        {
+            AssignedDocuments = new List<DocumentAssign>();
+        }
         public int Id { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string Name { get; set; }
+        public string Title { get; set; }
+        public string Body { get; set; }
 
-        public virtual ICollection<AssignedDocuments> AssignedDocuments { get; set; }
+        public List<DocumentAssign> AssignedDocuments { get; set; }
     }
 }
