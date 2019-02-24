@@ -18,7 +18,7 @@ namespace Assignment6.Models
                 { "InsertQuery",
                     "INSERT INTO [User] ([Username],[Password]) " +
                     "VALUES (@Username, @Password) " +
-                    "SELECT * FROM [User] WHERE [User].Id = (SELECT SCOPE_IDENTITY())"},
+                    "SELECT [User].Id, [User].Username FROM [User] WHERE [User].Id = (SELECT SCOPE_IDENTITY())"},
                 { "RemoveQuery",
                     "DELETE FROM [User] WHERE Id = @Id" },
                 { "UpdateQuery",
@@ -36,7 +36,7 @@ namespace Assignment6.Models
             {
                 var userDictionary = new Dictionary<int, User>();
                 users = dbCon.Query<User, Role, User>(
-                    "SELECT [User].Id, [User].Username, [User].Password, Role.Id, Role.Name " +
+                    "SELECT [User].Id, [User].Username, Role.Id, Role.Name " +
                     "FROM [User] LEFT JOIN UserRoles ON [User].Id = UserRoles.UserId LEFT JOIN " +
                     " Role ON UserRoles.RoleId = Role.Id" + (queryWhere == null ? string.Empty : $" WHERE {queryWhere}"),
                     (user, role) =>
@@ -60,6 +60,7 @@ namespace Assignment6.Models
 
             return users;
         }
+
         /// <summary>
         /// Finds a User using parameters Username and Password
         /// on success the user is authenticated
@@ -70,10 +71,8 @@ namespace Assignment6.Models
         /// <returns>true if user is authenticated with at least <string>one role</string>strong></returns>
         public bool Login(string username, string password, out User loggedInUser)
         {
-            loggedInUser = Get()
-                .FirstOrDefault(u => u.Username == username && u.Password == password);
 
-            if (loggedInUser == null)
+            if (!ValidateUser(username, password, out loggedInUser))
             {
                 return false;
             }
@@ -108,6 +107,13 @@ namespace Assignment6.Models
 
             HttpContext.Current.GetOwinContext().Authentication.SignIn(
                 new AuthenticationProperties { IsPersistent = false }, identity);
+        }
+        public bool ValidateUser(string username, string password, out User user)
+        {
+            user = Get("Username=@username And Password=@password",
+                new { username, password })
+                .FirstOrDefault();
+            return user != null;
         }
         public bool UserExists(string username, out User user)
         {

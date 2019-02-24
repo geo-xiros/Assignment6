@@ -17,7 +17,6 @@ namespace Assignment6.Models
         [StringLength(50)]
         public string Title { get; set; }
         public string Body { get; set; }
-
         public List<DocumentAssign> AssignedDocuments { get; set; }
     }
 }

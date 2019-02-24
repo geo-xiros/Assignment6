@@ -1,0 +1,107 @@
+﻿@model Assignment6.ViewModels.UserTaskView
+
+@{
+    ViewBag.Title = "User Tasks";
+}
+
+<h2>@ViewBag.Role Tasks</h2>
+
+@if (ViewBag.Pending)
+{
+    <!-- Button trigger modal -->
+    <button id="modal-show-add" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalAdd">
+        Add Document
+    </button>
+}
+@Html.Partial("~/Views/Partials/_PartialDocAdd.cshtml")
+@Html.Partial("~/Views/Partials/_PartialDocEdit.cshtml")
+<table class="table table-striped" id="tasks">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            @if (ViewBag.Pending)
+            {
+                <th>Action</th>
+            }
+            else
+            {
+                <th>Completed By</th>
+                <th>Action</th>
+            }
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.DocumentAssigns)
+        {
+        <tr id="@item.Id" UserId="@Model.UserId" body="@item.Document.Body" title="@item.Document.Title">
+            <td>
+                @Html.DisplayFor(modelItem => item.Document.Title)
+            </td>
+            @if (ViewBag.Pending)
+            {
+                <td>
+                    @Html.ActionLink("Complete", "Complete", new { Id = item.Id, roleId = Model.RoleId, userId = Model.UserId }, htmlAttributes: new { @class = "btn btn-success" })
+                    <button class="btn btn-info edit-doc ml-2">View</button>
+                </td>
+            }
+            else
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.PurchasedByUser.Username)
+                </td>
+                <td>
+                    <button class="btn btn-info edit-doc ml-2">View</button>
+                </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts{
+    <script src="https://cdn.ckeditor.com/4.11.2/standard/ckeditor.js"></script>
+    <script>
+        $(document).ready(function () {
+            var editor1 = CKEDITOR.replace('editor1');
+            var editor2 = CKEDITOR.replace('editor2');
+            var newTitle = $('#form-submit-add input[name="Title"]');
+            var newBody = $('#form-submit-add input[name="Body"]');
+            var editTitle = $('#exampleModalEdit input[name="Title"]');
+            var editModal = $('#exampleModalEdit');
+            var addModal = $('#exampleModalAdd');
+            $('#modal-show-add').on('click', function () {
+                newTitle.val("");
+                editor1.setData("");
+            })
+            $('#form-submit-add').submit(function (e) {
+
+                if (this.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                else {
+                    newBody.val(editor1.getData());
+                    e.preventDefault();
+                    $.post($(this).attr('action'), $(this).serialize(), function (data) {
+                        $('#tasks tbody').append(data);
+                        addModal.modal('hide');
+                    });
+                }
+
+            });
+
+            $('table').on('click', '.edit-doc', function () {
+
+                var tableRow = $(this).closest('tr');
+                editor2.setData(tableRow.attr('body'));
+                editTitle.val(tableRow.attr('title'));
+                editModal.modal('show');
+            });
+
+        });
+    </script>
+}
+

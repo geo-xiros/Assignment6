@@ -51,19 +51,20 @@ CREATE TABLE Document (
 	Id int Identity(1,1) not null,
 	Title varchar(50) not null,
 	Body Text null,
-	constraint pk_Document Primary key (Id)
+	constraint PK_Document Primary key (Id)
 )
 go
 
 CREATE TABLE DocumentAssign(
 	Id int identity(1,1) not null,
 	DocumentId int not null,
-	RoleId int not null,
-	UserId int null,
+	AssignedToRoleId int not null,
+	PurchasedByUserId int null,
+	Status varchar(20) not null,
 	constraint PK_DocumentAssign primary key (Id),
 	constraint FK_DocumentAssignDocumentId foreign key (DocumentId) references Document(Id),
-	constraint FK_DocumentAssignUserId foreign key (UserId) references [User](Id),
-	constraint FK_DocumentAssignRoleId foreign key (RoleId) references Role(Id)
+	constraint FK_DocumentAssignPurchasedByUserId foreign key (PurchasedByUserId) references [User](Id),
+	constraint FK_DocumentAssignAssignedToRoleId foreign key (AssignedToRoleId) references Role(Id)
 )
 go
 
@@ -74,3 +75,4 @@ go
 
 INSERT INTO UserRoles (UserId, RoleId) VALUES (1, 1)
 go
+

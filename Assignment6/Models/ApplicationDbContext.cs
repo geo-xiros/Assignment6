@@ -20,6 +20,8 @@ namespace Assignment6.Models
             Users = new UserManager(this);
             Roles = new RoleManager(this);
             Registrations = new RegistrationManager(this);
+            Documents = new DocumentManager(this);
+            DocumentAssigns = new DocumentAssignManager(this);
         }
         public void UsingConnection(Action<SqlConnection> action)
         {
@@ -40,6 +42,8 @@ namespace Assignment6.Models
         public UserManager Users { get; set; }
         public RoleManager Roles { get; set; }
         public RegistrationManager Registrations { get; set; }
+        public DocumentManager Documents { get; set; }
+        public DocumentAssignManager DocumentAssigns { get; set; }
     }
 
     public abstract class TableManager<T> : IDatabaseActions<T>

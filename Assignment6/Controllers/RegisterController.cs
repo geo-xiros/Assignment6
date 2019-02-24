@@ -49,26 +49,24 @@ namespace Assignment6.Controllers
             }
             else
             {
-                if (registrationUser.Password != user.Password)
+                if (!_db.Users.ValidateUser(registrationUser.Username, registrationUser.Password, out user))
                 {
                     return $"Wrong User Password.";
                 }
             }
 
-            Role role = user.Roles.FirstOrDefault(r => r.Id == registrationUser.RoleId);
-            if (role != null)
+            string message;
+
+            if (RoleAllreadyApproved(user, registrationUser.RoleId, out message))
             {
-                return $"Allready Approved As {role.Name}";
+                return message;
             }
 
-            role = _db.Roles.Get("Id=@RoleId", new { registrationUser.RoleId }).FirstOrDefault();
-            
-            if (_db.Registrations.Get().Any(u =>
-                u.UserId == user.Id &&
-                u.RoleId == registrationUser.RoleId &&
-                u.Status.Equals("Pending")))
+            Role role = _db.Roles.Get("Id=@RoleId", new { registrationUser.RoleId  }).FirstOrDefault();
+
+            if (RoleAllreadyPending(user, role, out message))
             {
-                return $"Allready Pending Role {role.Name} to be approved";
+                return message;
             }
 
             registrationUser.UserId = user.Id;
@@ -77,6 +75,35 @@ namespace Assignment6.Controllers
             _db.Registrations.Add(registrationUser);
 
             return $"User registered Pending Role {role.Name} to be approved";
+        }
+
+        private bool RoleAllreadyApproved(User user, int roleId, out string message)
+        {
+            message = string.Empty;
+
+            Role role = user.Roles.FirstOrDefault(r => r.Id == roleId);
+            if (role != null)
+            {
+                message = $"Allready Approved As {role.Name}";
+                return true;
+            }
+
+            return false;
+        }
+        private bool RoleAllreadyPending(User user, Role role, out string message)
+        {
+            message = string.Empty;
+
+            if (_db.Registrations.Get("RegisteredByUserId Is Null").Any(u =>
+                u.UserId == user.Id &&
+                u.RoleId == role.Id))
+            {
+                
+                message = $"Allready Pending Role {role.Name} to be approved";
+                return true;
+            }
+
+            return false;
         }
     }
 }

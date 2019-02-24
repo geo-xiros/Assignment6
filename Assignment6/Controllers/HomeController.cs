@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Assignment6.ViewModels;
 
 namespace Assignment6.Controllers
 {
-    
+
     public class HomeController : Controller
     {
         ApplicationDbContext _db = new ApplicationDbContext();
-        
+
         public ActionResult Index()
         {
             return View();
@@ -31,9 +32,37 @@ namespace Assignment6.Controllers
 
             ViewBag.Title = $"{status} Tasks for {role}";
             ViewBag.Status = status;
+            ViewBag.Role = role;
             ViewBag.Pending = status == "Pending";
 
-            return View("UsersRegistrations", usersRegistrations.OrderBy(r => r.UserId).ThenBy(r => r.RoleId));
+            if (role == "Manager")
+            {
+                return View("UsersRegistrations", usersRegistrations.OrderBy(r => r.UserId).ThenBy(r => r.RoleId));
+            }
+            User loggedUser = Session["user"] as User;
+            if (loggedUser != null)
+            {
+
+                var RoleId = loggedUser.Roles.FirstOrDefault(r => r.Name.Equals(role))?.Id ?? 0;
+
+                UserTaskView userTaskView = new UserTaskView()
+                {
+                    UserId = loggedUser.Id,
+                    RoleId = loggedUser.Roles.FirstOrDefault(r => r.Name.Equals(role))?.Id ?? 0
+                };
+                string statusFilter = status == "Pending" ? "Status = 'Pending'" : "Status <> 'Pending'";
+                userTaskView.DocumentAssigns = _db
+                    .DocumentAssigns
+                    .Get(statusFilter + " AND ((PurchasedByUserId=@UserId AND AssignedToRoleId=@RoleId) OR (PurchasedByUserId Is null AND AssignedToRoleId=@RoleId))", new
+                    {
+                        UserId = loggedUser.Id,
+                        RoleId
+                    });
+
+                return View("UserTasks", userTaskView);
+            }
+
+            return View();
         }
 
         [Authorize(Roles = "Manager")]
@@ -65,7 +94,15 @@ namespace Assignment6.Controllers
             return Redirect(Request.UrlReferrer.ToString());
         }
 
-
+        public ActionResult Complete(int id, int roleId, int userId)
+        {
+            if (_db.DocumentAssigns.CompletedBy(id, userId))
+            {
+                int assignToRoleId = roleId + 1;
+                _db.DocumentAssigns.ForwardToNextRole(id, assignToRoleId);
+            }
+            return Redirect(Request.UrlReferrer.ToString());
+        }
     }
 }
 

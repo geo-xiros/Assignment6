@@ -29,7 +29,12 @@
     </tr>
     @foreach (var item in Model)
     {
-        <tr>
+        string rowColor=string.Empty;
+        if (!ViewBag.Pending)
+        {
+           rowColor = item.Status == "Approved" ? "table-success" : "table-danger";
+        }
+        <tr class="@rowColor">
             <td>
                 @Html.DisplayFor(modelItem => item.Username)
             </td>
@@ -42,7 +47,6 @@
                     @Html.ActionLink("Approve", "Approve", new { id = item.Id }, htmlAttributes: new { @class = "btn btn-success" })
                     @Html.ActionLink("Decline", "Decline", new { id = item.Id }, htmlAttributes: new { @class = "btn btn-danger" })
                 </td>
-
             }
             else
             {

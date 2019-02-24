@@ -10,12 +10,16 @@ namespace Assignment6.Models
         public int Id { get; set; }
 
         public int DocumentId { get; set; }
+        public Document Document { get; set; }
 
-        public int RoleId { get; set; }
+        public int AssignedToRoleId { get; set; }
+        public Role AssignedToRole { get; set; }
 
-        public int UserId { get; set; }
+        public int? PurchasedByUserId { get; set; }
 
-        //public bool Completed { get; set; }
+        public User PurchasedByUser { get; set; }
+
+        public string Status { get; set; }
 
     }
 }
