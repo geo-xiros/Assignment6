@@ -1,11 +1,11 @@
 ﻿@model Assignment6.ViewModels.UserTaskView
 
 @{
-    ViewBag.Title = "User Tasks";
+    ViewBag.Title = ViewBag.Status + " Tasks";
 }
 
-<h2>@ViewBag.Role Tasks</h2>
-
+<h2>@ViewBag.Status @ViewBag.Role Tasks</h2>
+<hr />
 @if (ViewBag.Pending)
 {
     <!-- Button trigger modal -->
@@ -15,51 +15,34 @@
 }
 @Html.Partial("~/Views/Partials/_PartialDocAdd.cshtml")
 @Html.Partial("~/Views/Partials/_PartialDocEdit.cshtml")
-<table class="table table-striped" id="tasks">
-    <thead>
-        <tr>
-            <th>
-                Title
-            </th>
-            @if (ViewBag.Pending)
-            {
-                <th>Action</th>
-            }
-            else
-            {
-                <th>Completed By</th>
-                <th>Action</th>
-            }
+<hr />
+<div id="tasks-list">
+    @foreach (var item in Model.DocumentAssigns)
+    {
+        <div class="row">
+            <div class="row col-12 my-3 p-3 bg-white rounded shadow-sm">
+                <div class="col-9">
+                    <h4>@Html.DisplayFor(modelItem => item.Document.Title)</h4>
+                    @if (!ViewBag.Pending)
+                    {
+                        <small class="text-muted">Completed by @Html.DisplayFor(modelItem => item.PurchasedByUser.Username)</small>
+                    }
 
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.DocumentAssigns)
-        {
-        <tr id="@item.Id" UserId="@Model.UserId" body="@item.Document.Body" title="@item.Document.Title">
-            <td>
-                @Html.DisplayFor(modelItem => item.Document.Title)
-            </td>
-            @if (ViewBag.Pending)
-            {
-                <td>
-                    @Html.ActionLink("Complete", "Complete", new { Id = item.Id, roleId = Model.RoleId, userId = Model.UserId }, htmlAttributes: new { @class = "btn btn-success" })
-                    <button class="btn btn-info edit-doc ml-2">View</button>
-                </td>
-            }
-            else
-            {
-                <td>
-                    @Html.DisplayFor(modelItem => item.PurchasedByUser.Username)
-                </td>
-                <td>
-                    <button class="btn btn-info edit-doc ml-2">View</button>
-                </td>
+                </div>
+                @if (ViewBag.Pending)
+                {
+                    <div class="col-1">
+                        @Html.ActionLink("Complete", "Complete", new { Id = item.Id, roleId = Model.RoleId, userId = Model.UserId }, htmlAttributes: new { @class = "btn btn-success" })
+                    </div>
                 }
-            </tr>
-        }
-    </tbody>
-</table>
+                <div class="col-1 " id="@item.Id" UserId="@Model.UserId" body="@item.Document.Body" title="@item.Document.Title">
+                    <button class="btn btn-info edit-doc ml-2">View</button>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
 
 @section scripts{
     <script src="https://cdn.ckeditor.com/4.11.2/standard/ckeditor.js"></script>
@@ -86,20 +69,20 @@
                     newBody.val(editor1.getData());
                     e.preventDefault();
                     $.post($(this).attr('action'), $(this).serialize(), function (data) {
-                        $('#tasks tbody').append(data);
+                        $('#tasks-list').append(data);
                         addModal.modal('hide');
                     });
                 }
 
             });
+            $('div').on('click', '.edit-doc', function () {
 
-            $('table').on('click', '.edit-doc', function () {
-
-                var tableRow = $(this).closest('tr');
+                var tableRow = $(this).closest('div');
                 editor2.setData(tableRow.attr('body'));
                 editTitle.val(tableRow.attr('title'));
                 editModal.modal('show');
             });
+
 
         });
     </script>

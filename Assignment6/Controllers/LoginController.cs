@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Assignment6.Factories;
 
 namespace Assignment6.Controllers
 {
@@ -38,7 +39,13 @@ namespace Assignment6.Controllers
             }
 
             Session["user"] = loggedInUser;
-            return Redirect("/HOME");
+            foreach(var role in loggedInUser.Roles)
+            {
+                var nextRoleManager = new NextRoleManagerFactory().Get(role.Name);
+                Session[$"NextRoleManager{role.Id}"] = nextRoleManager;
+            }
+            
+            return RedirectToAction("Index", "Home");
         }
 
         public ActionResult Logout()

@@ -42,21 +42,21 @@ namespace Assignment6.Controllers
                 return string.Empty;// NotFound();
             }
 
-            return $"<tr id=\"{documentAssign.Id}\" UserId=\"{ documentView.UserId}\" body=\"{documentView.Body}\" title=\"{ documentView.Title}\">" +
-                $"<td>{documentView.Title}</td>" +
-                "<td>" +
-                $"<a class=\"btn btn-success\" href = \"/Home/Complete?Id={documentAssign.Id}&roleId={documentView.RoleId}&userId={documentView.UserId}\">Complete</a>" +
-                "<button class=\"btn btn-info edit-doc ml-2\"> View</button> " +
-                "</td></tr>";
-            //return Ok(new {
-            //    Id = documentAssign.Id,
-            //    UserId = documentView.UserId,
-            //    RoleId = documentView.RoleId,
-            //    Title = documentView.Title,
-            //    Body = documentView.Body
-            //});
+            // TODO: return row content using razor.parse
+            return 
+                "<div class=\"row\">" +
+                "  <div class=\"row col-12 my-3 p-3 bg-white rounded shadow-sm\">" +
+                "    <div class=\"col-9\">" +
+                $"      <h4>{documentView.Title}</h4>" +
+                "    </div>" +
+                "    <div class=\"col-1\">" +
+                $"      <a class=\"btn btn-success\" href = \"/Home/Complete?Id={documentAssign.Id}&roleId={documentView.RoleId}&userId={documentView.UserId}\">Complete</a>" +
+                "    </div>" +
+                $"    <div class=\"col-1 \" id=\"{documentAssign.Id}\" UserId=\"{ documentView.UserId}\" body=\"{documentView.Body}\" title=\"{ documentView.Title}\">" +
+                "      <button class=\"btn btn-info edit-doc ml-2\">View</button>" +
+                "    </div>" +
+                "  </div>" +
+                "</div>";
         }
-
-
     }
 }

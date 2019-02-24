@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Assignment6.ViewModels;
 using System.Net;
+using Assignment6.Factories;
 
 namespace Assignment6.Controllers
 {
@@ -101,15 +102,23 @@ namespace Assignment6.Controllers
             return Redirect(Request.UrlReferrer.ToString());
         }
 
+        [Authorize(Roles = "Architect,Analyst,Programmer,Tester")]
         public ActionResult Complete(int id, int roleId, int userId)
         {
+            NextRoleManager nextRoleManager = Session[$"NextRoleManager{roleId}"] as NextRoleManager;
+
             if (_db.DocumentAssigns.CompletedBy(id, userId))
             {
-                int assignToRoleId = roleId + 1;
-                _db.DocumentAssigns.ForwardToNextRole(id, assignToRoleId);
+                int nextRoleId = nextRoleManager.Get(roleId);
+                if (nextRoleId != roleId)
+                {
+                    _db.DocumentAssigns.ForwardToNextRole(id, nextRoleId);
+                }
+                
             }
             return Redirect(Request.UrlReferrer.ToString());
         }
     }
+
 }
 
