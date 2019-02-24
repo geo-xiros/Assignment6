@@ -5,9 +5,14 @@ using System.Web;
 
 namespace Assignment6.Factories
 {
-    public class NextRoleManagerFactory
+    public abstract class NextRoleFactory
     {
-        public NextRoleManager Get(string role)
+        public abstract NextRoleManager MakeNextRoleManager(string role);
+    }
+
+    public class FirstVersionRoleManagerFactory: NextRoleFactory
+    {
+        public override NextRoleManager MakeNextRoleManager(string role)
         {
             NextRole nextRole;
             switch (role)
@@ -27,9 +32,6 @@ namespace Assignment6.Factories
                 default:
                     nextRole = new AnalystNextRole();
                     break;
-                    //case "Manager":
-                    //    nextRole = new AnalystNextRole();
-                    //    break;
             }
 
             return new NextRoleManager(nextRole);

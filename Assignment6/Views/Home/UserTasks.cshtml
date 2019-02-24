@@ -12,10 +12,11 @@
     <button id="modal-show-add" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalAdd">
         Add Document
     </button>
+    <hr />
 }
 @Html.Partial("~/Views/Partials/_PartialDocAdd.cshtml")
 @Html.Partial("~/Views/Partials/_PartialDocEdit.cshtml")
-<hr />
+
 <div id="tasks-list">
     @foreach (var item in Model.DocumentAssigns)
     {

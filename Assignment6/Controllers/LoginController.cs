@@ -39,9 +39,11 @@ namespace Assignment6.Controllers
             }
 
             Session["user"] = loggedInUser;
-            foreach(var role in loggedInUser.Roles)
+            NextRoleFactory nextRoleFactory = new FirstVersionRoleManagerFactory();
+            
+            foreach (var role in loggedInUser.Roles)
             {
-                var nextRoleManager = new NextRoleManagerFactory().Get(role.Name);
+                var nextRoleManager = nextRoleFactory.MakeNextRoleManager(role.Name);
                 Session[$"NextRoleManager{role.Id}"] = nextRoleManager;
             }
             

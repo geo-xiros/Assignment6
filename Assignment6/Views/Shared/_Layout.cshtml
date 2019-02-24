@@ -18,19 +18,20 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                @Html.Raw( @Html.UsersLinks())
+                @Html.Raw(@Html.UsersLinks())
             </ul>
             @Html.Partial("~/Views/Partials/_NavBarLoginLogout.cshtml");
         </div>
     </nav>
-    <div class="container body-content">
+    <div class="container body-content pt-4">
         @RenderBody()
-        
-        <footer class="fixed-bottom">
+
+        <footer>
             <hr />
             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
         </footer>
     </div>
+
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
