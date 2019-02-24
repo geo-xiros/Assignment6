@@ -56,26 +56,25 @@
             var editTitle = $('#exampleModalEdit input[name="Title"]');
             var editModal = $('#exampleModalEdit');
             var addModal = $('#exampleModalAdd');
+
             $('#modal-show-add').on('click', function () {
                 newTitle.val("");
                 editor1.setData("");
             })
-            $('#form-submit-add').submit(function (e) {
 
-                if (this.checkValidity() === false) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                else {
+            $('#form-submit-add').submit(function (event) {
+                event.preventDefault();
+                if (this.checkValidity() === true) {
+
                     newBody.val(editor1.getData());
-                    e.preventDefault();
+                    
                     $.post($(this).attr('action'), $(this).serialize(), function (data) {
-                        $('#tasks-list').append(data);
+                        $('#tasks-list').prepend(data);
                         addModal.modal('hide');
                     });
                 }
-
             });
+
             $('div').on('click', '.edit-doc', function () {
 
                 var tableRow = $(this).closest('div');
@@ -83,7 +82,6 @@
                 editTitle.val(tableRow.attr('title'));
                 editModal.modal('show');
             });
-
 
         });
     </script>
