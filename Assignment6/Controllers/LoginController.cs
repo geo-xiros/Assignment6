@@ -38,7 +38,7 @@ namespace Assignment6.Controllers
             }
 
             Session["user"] = loggedInUser;
-            return View("Success", loggedInUser);
+            return Redirect("/HOME");
         }
 
         public ActionResult Logout()

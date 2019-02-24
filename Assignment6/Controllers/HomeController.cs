@@ -15,6 +15,7 @@ namespace Assignment6.Controllers
 
         public ActionResult Index()
         {
+            ViewBag.RegistrationInfo = TempData["RegistrationInfo"]?.ToString();
             return View();
         }
 

@@ -14,7 +14,8 @@ namespace Assignment6.Models
         public string Password { get; set; }
         public int RoleId { get; set; }
         public string Role { get; set; }
-        
+        public IEnumerable<Role> Roles { get; set; }
+
         public int? RegisteredByUserId { get; set; }
         [DisplayName("Registered By")]
         public string RegisteredByUsername { get; set; }

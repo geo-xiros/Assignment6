@@ -25,14 +25,14 @@ namespace Assignment6.ViewModels
         public int RoleId { get; set; }
         //public virtual ICollection<Role> Role { get; set; }
 
-        public User GetUser(ApplicationDbContext db)
-        {
-            return new User()
-            {
-                Username = this.Username,
-                Password = this.Password,
-                Roles = db.Roles.Get().Where(r => r.Id == this.RoleId).ToList()
-            };
-        }
+        //public User GetUser(ApplicationDbContext db)
+        //{
+        //    return new User()
+        //    {
+        //        Username = this.Username,
+        //        Password = this.Password,
+        //        Roles = db.Roles.Get().Where(r => r.Id == this.RoleId).ToList()
+        //    };
+        //}
     }
 }
