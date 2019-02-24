@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Assignment6.ViewModels;
+using System.Net;
 
 namespace Assignment6.Controllers
 {
@@ -29,7 +30,6 @@ namespace Assignment6.Controllers
         public ActionResult Tasks(string status, string role)
         {
 
-            var usersRegistrations = _db.Registrations.Get(status == "Pending" ? "RegisteredByUserId Is Null" : "RegisteredByUserId Is Not Null");
 
             ViewBag.Title = $"{status} Tasks for {role}";
             ViewBag.Status = status;
@@ -38,8 +38,14 @@ namespace Assignment6.Controllers
 
             if (role == "Manager")
             {
-                return View("UsersRegistrations", usersRegistrations.OrderBy(r => r.UserId).ThenBy(r => r.RoleId));
+                var usersRegistrations = _db
+                    .Registrations
+                    .Get(status == "Pending" ? "RegisteredByUserId Is Null" : "RegisteredByUserId Is Not Null")
+                    .OrderBy(r => r.UserId)
+                    .ThenBy(r => r.RoleId);
+                return View("UsersRegistrations", usersRegistrations);
             }
+
             User loggedUser = Session["user"] as User;
             if (loggedUser != null)
             {
@@ -63,7 +69,7 @@ namespace Assignment6.Controllers
                 return View("UserTasks", userTaskView);
             }
 
-            return View();
+            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
         }
 
         [Authorize(Roles = "Manager")]

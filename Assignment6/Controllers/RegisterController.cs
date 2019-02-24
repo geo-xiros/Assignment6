@@ -13,8 +13,6 @@ namespace Assignment6.Controllers
         public ActionResult Index()
         {
             ViewBag.RoleId = new SelectList(_db.Roles.Get(), "Id", "Name");
-            //var registration = new Registration();
-            //registration.Roles = _db.Roles.Get().ToList();
             return View();
         }
 
