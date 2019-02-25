@@ -62,6 +62,8 @@ namespace Assignment6.Models
 
             return documentAssigns;
         }
+
+
         public bool CompletedBy(int id, int userId)
         {
             int affectedRows = 0;
@@ -80,6 +82,7 @@ namespace Assignment6.Models
 
             return affectedRows != 0;
         }
+
         public bool ForwardToNextRole(int id, int assignToRoleId)
         {
             int affectedRows = 0;
@@ -94,6 +97,22 @@ namespace Assignment6.Models
                     });
             });
             return affectedRows != 0;
+        }
+        public bool Complete(int id, int documentId, int byUserId, int roleId)
+        {
+            if (!Find(id, out DocumentAssign documentAssign))
+            {
+                documentAssign = new DocumentAssign()
+                {
+                    AssignedToRoleId = roleId,
+                    DocumentId = documentId
+                };
+            }
+
+            documentAssign.Status = "Completed";
+            documentAssign.PurchasedByUserId = byUserId;
+
+            return Update(documentAssign);
         }
     }
 }

@@ -46,7 +46,27 @@ namespace Assignment6.Models
 
             return registrations;
         }
+        public bool Approve(int id, int byUserId)
+        {
+            return UpdateRegistrationStatus(id, byUserId, "Approved");
+        }
+        public bool Decline(int id, int byUserId)
+        {
+            return UpdateRegistrationStatus(id, byUserId, "Declined");
+        }
+        private bool UpdateRegistrationStatus(int id, int byUserId, string status)
+        {
+            if (!Find(id, out Registration registration))
+            {
 
+                return false;
+            }
+
+            registration.RegisteredByUserId = byUserId;
+            registration.Status = status;
+
+            return Update(registration);
+        }
     }
 
 }

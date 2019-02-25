@@ -75,6 +75,11 @@ namespace Assignment6.Models
         {
             return Get(_queryParts["FindById"], new { id }).FirstOrDefault();
         }
+        public bool Find(int id, out T table)
+        {
+            table = Find(id);
+            return table != null;
+        }
 
         public abstract IEnumerable<T> Get(string query = null, object parameters = null);
 

@@ -50,64 +50,53 @@ namespace Assignment6.Controllers
             User loggedUser = Session["user"] as User;
             DefaultPendingDocuments defaultPendingDocuments = Session["DefaultPendingDocuments"] as DefaultPendingDocuments;
 
-            if (loggedUser != null && defaultPendingDocuments != null)
+            if (loggedUser == null || defaultPendingDocuments == null)
             {
-
-                var RoleId = loggedUser.Roles.FirstOrDefault(r => r.Name.Equals(role))?.Id ?? 0;
-
-                UserTaskView userTaskView = new UserTaskView()
-                {
-                    UserId = loggedUser.Id,
-                    RoleId = loggedUser.Roles.FirstOrDefault(r => r.Name.Equals(role))?.Id ?? 0
-                };
-
-                // TODO:
-                // Completed Documents 
-                if (status == "Pending")
-                {
-                    PendingDocuments pendingDocuments = defaultPendingDocuments[role];
-
-                    userTaskView.Documents = pendingDocuments.GetDocuments();
-
-                }
-                else
-                {
-                    userTaskView.Documents = _db.Documents
-                        .Get()
-                        .Where(d =>
-                            d.AssignedDocuments.Any(a =>
-                                a.PurchasedByUserId == loggedUser.Id && 
-                                a.AssignedToRoleId == RoleId && 
-                                a.Status=="Completed"));
-                }
-
-                //string statusFilter = status == "Pending" ? "Status = 'Pending'" : "Status <> 'Pending'";
-                //userTaskView.DocumentAssigns = _db
-                //    .DocumentAssigns
-                //    .Get(statusFilter + " AND ((PurchasedByUserId=@UserId AND AssignedToRoleId=@RoleId) OR (PurchasedByUserId Is null AND AssignedToRoleId=@RoleId))", new
-                //    {
-                //        UserId = loggedUser.Id,
-                //        RoleId
-                //    });
-
-                return View("UserTasks", userTaskView);
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            var RoleId = loggedUser.Roles.FirstOrDefault(r => r.Name.Equals(role))?.Id ?? 0;
+
+            UserTaskView userTaskView = new UserTaskView()
+            {
+                UserId = loggedUser.Id,
+                RoleId = loggedUser.Roles.FirstOrDefault(r => r.Name.Equals(role))?.Id ?? 0
+            };
+
+            // TODO:
+            // Completed Documents 
+            if (status == "Pending")
+            {
+                PendingDocuments pendingDocuments = defaultPendingDocuments[role];
+
+                userTaskView.Documents = pendingDocuments.GetDocuments();
+
+            }
+            else
+            {
+                userTaskView.Documents = _db.Documents
+                    .Get()
+                    .Where(d =>
+                        d.AssignedDocuments.Any(a =>
+                            a.PurchasedByUserId == loggedUser.Id &&
+                            a.AssignedToRoleId == RoleId &&
+                            a.Status == "Completed"));
+            }
+
+            return View("UserTasks", userTaskView);
+
         }
 
         [Authorize(Roles = "Manager")]
         public ActionResult Approve(int? id)
         {
-
             User loggedUser = Session["user"] as User;
 
-            Registration registration = _db.Registrations.Get("Registration.Id=@id", new { id }).FirstOrDefault();
-            registration.Status = "Approved";
-            registration.RegisteredByUserId = loggedUser.Id;
-            _db.Registrations.Update(registration);
-
-            _db.Users.AddUserRole(registration.UserId, registration.RoleId);
+            if (!_db.Registrations.Approve(id ?? 0, loggedUser.Id))
+            {
+                // TODO 
+                // Error Handling
+            }
 
             return Redirect(Request.UrlReferrer.ToString());
         }
@@ -116,11 +105,11 @@ namespace Assignment6.Controllers
         public ActionResult Decline(int? id)
         {
             User loggedUser = Session["user"] as User;
-
-            Registration registration = _db.Registrations.Get("Registration.Id=@id", new { id }).FirstOrDefault();
-            registration.Status = "Declined";
-            registration.RegisteredByUserId = loggedUser.Id;
-            _db.Registrations.Update(registration);
+            if (!_db.Registrations.Decline(id ?? 0, loggedUser.Id))
+            {
+                // TODO 
+                // Error Handling
+            }
 
             return Redirect(Request.UrlReferrer.ToString());
         }
@@ -128,28 +117,15 @@ namespace Assignment6.Controllers
         [Authorize(Roles = "Architect,Analyst,Programmer,Tester")]
         public ActionResult Complete(int id, int? documentAssignId, int roleId, int userId)
         {
-            DocumentAssign documentAssign = _db.DocumentAssigns.Get("DocumentAssign.Id = @documentAssignId", new { documentAssignId }).FirstOrDefault();
-
-            if (documentAssignId == null)
+            if (!_db.DocumentAssigns.Complete(documentAssignId??0,id, userId, roleId))
             {
-                documentAssign = new DocumentAssign()
-                {
-                    PurchasedByUserId = userId,
-                    AssignedToRoleId = roleId,
-                    Status = "Completed",
-                    DocumentId = id
-                };
-                _db.DocumentAssigns.Add(documentAssign);
+                // TODO 
+                // Update Error Handling
+            }
 
-            }
-            else
-            {
-                documentAssign.Status = "Completed";
-                documentAssign.PurchasedByUserId = userId;
-                _db.DocumentAssigns.Update(documentAssign);
-            }
             return Redirect(Request.UrlReferrer.ToString());
         }
+
     }
 
 }
