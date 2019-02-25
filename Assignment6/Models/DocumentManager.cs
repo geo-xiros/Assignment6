@@ -32,10 +32,46 @@ namespace Assignment6.Models
 
             _db.UsingConnection((dbCon) =>
             {
-                documents = dbCon.Query<Document>(
-                    "SELECT * FROM Document " +
+                var DocumentsDictionary = new Dictionary<int, Document>();
+                var documentAssignsDictionary = new Dictionary<int, DocumentAssign>();
+
+                documents = dbCon.Query<Document, DocumentAssign, Role, User, Document>(
+                    "SELECT [Document].*, DocumentAssign.*, Role.*, [User].Id, [User].Username  " +
+                    "FROM [Document] " +
+                    "INNER JOIN DocumentAssign ON [Document].Id = DocumentAssign.DocumentId " +
+                    "INNER JOIN Role ON DocumentAssign.AssignedToRoleId = Role.Id " +
+                    "LEFT JOIN [User] ON DocumentAssign.PurchasedByUserId = [User].Id " +
                     (queryWhere == null ? string.Empty : $" WHERE {queryWhere}"),
-                    parameters);
+                    (document, documentAssign, role, user) =>
+                    {
+                        Document documentEntry;
+
+                        if (!DocumentsDictionary.TryGetValue(document.Id, out documentEntry))
+                        {
+                            documentEntry = document;
+                            documentEntry.AssignedDocuments = new List<DocumentAssign>();
+                            DocumentsDictionary.Add(document.Id, document); 
+                        }
+                        DocumentAssign documentAssignEntry;
+
+                        if (!documentAssignsDictionary.TryGetValue(documentAssign.Id, out documentAssignEntry))
+                        {
+                            documentAssignEntry = documentAssign;
+                            documentAssignEntry.PurchasedByUser = user;
+                            documentAssignEntry.AssignedToRole = role;
+                            documentAssignEntry.Document = documentEntry;
+                            documentAssignsDictionary.Add(documentAssign.Id, documentAssign);
+                        }
+
+                        if (documentAssign != null)
+                        {
+                            documentEntry.AssignedDocuments.Add(documentAssign);
+                        }
+
+                        return documentEntry;
+                    },
+                    splitOn: "id",
+                    param: parameters).Distinct();
             });
 
             return documents;

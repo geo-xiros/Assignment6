@@ -51,12 +51,13 @@ namespace Assignment6.Models
                             documentAssignEntry.PurchasedByUser = user;
                             documentAssignEntry.AssignedToRole = role;
                             documentAssignEntry.Document = document;
+                            documentAssignsDictionary.Add(documentAssign.Id, documentAssignEntry);
                         }
 
                         return documentAssignEntry;
                     },
                     splitOn: "id",
-                    param: parameters);
+                    param: parameters).Distinct();
             });
 
             return documentAssigns;

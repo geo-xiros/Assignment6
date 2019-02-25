@@ -50,7 +50,7 @@ namespace Assignment6.Controllers
                 $"      <h4>{documentView.Title}</h4>" +
                 "    </div>" +
                 "    <div class=\"col-1\">" +
-                $"      <a class=\"btn btn-success\" href = \"/Home/Complete?Id={documentAssign.Id}&roleId={documentView.RoleId}&userId={documentView.UserId}\">Complete</a>" +
+                $"      <a class=\"btn btn-success\" href = \"/Home/Complete?Id={documentAssign.DocumentId}&documentAssignId={documentAssign.Id}&roleId={documentView.RoleId}&userId={documentView.UserId}\">Complete</a>" +
                 "    </div>" +
                 $"    <div class=\"col-1 \" id=\"{documentAssign.Id}\" UserId=\"{ documentView.UserId}\" body=\"{documentView.Body}\" title=\"{ documentView.Title}\">" +
                 "      <button class=\"btn btn-info edit-doc ml-2\">View</button>" +

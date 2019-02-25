@@ -48,7 +48,9 @@ namespace Assignment6.Controllers
             }
 
             User loggedUser = Session["user"] as User;
-            if (loggedUser != null)
+            DefaultPendingDocuments defaultPendingDocuments = Session["DefaultPendingDocuments"] as DefaultPendingDocuments;
+
+            if (loggedUser != null && defaultPendingDocuments != null)
             {
 
                 var RoleId = loggedUser.Roles.FirstOrDefault(r => r.Name.Equals(role))?.Id ?? 0;
@@ -58,14 +60,35 @@ namespace Assignment6.Controllers
                     UserId = loggedUser.Id,
                     RoleId = loggedUser.Roles.FirstOrDefault(r => r.Name.Equals(role))?.Id ?? 0
                 };
-                string statusFilter = status == "Pending" ? "Status = 'Pending'" : "Status <> 'Pending'";
-                userTaskView.DocumentAssigns = _db
-                    .DocumentAssigns
-                    .Get(statusFilter + " AND ((PurchasedByUserId=@UserId AND AssignedToRoleId=@RoleId) OR (PurchasedByUserId Is null AND AssignedToRoleId=@RoleId))", new
-                    {
-                        UserId = loggedUser.Id,
-                        RoleId
-                    });
+
+                // TODO:
+                // Completed Documents 
+                if (status == "Pending")
+                {
+                    PendingDocuments pendingDocuments = defaultPendingDocuments[role];
+
+                    userTaskView.Documents = pendingDocuments.GetDocuments();
+
+                }
+                else
+                {
+                    userTaskView.Documents = _db.Documents
+                        .Get()
+                        .Where(d =>
+                            d.AssignedDocuments.Any(a =>
+                                a.PurchasedByUserId == loggedUser.Id && 
+                                a.AssignedToRoleId == RoleId && 
+                                a.Status=="Completed"));
+                }
+
+                //string statusFilter = status == "Pending" ? "Status = 'Pending'" : "Status <> 'Pending'";
+                //userTaskView.DocumentAssigns = _db
+                //    .DocumentAssigns
+                //    .Get(statusFilter + " AND ((PurchasedByUserId=@UserId AND AssignedToRoleId=@RoleId) OR (PurchasedByUserId Is null AND AssignedToRoleId=@RoleId))", new
+                //    {
+                //        UserId = loggedUser.Id,
+                //        RoleId
+                //    });
 
                 return View("UserTasks", userTaskView);
             }
@@ -103,18 +126,27 @@ namespace Assignment6.Controllers
         }
 
         [Authorize(Roles = "Architect,Analyst,Programmer,Tester")]
-        public ActionResult Complete(int id, int roleId, int userId)
+        public ActionResult Complete(int id, int? documentAssignId, int roleId, int userId)
         {
-            NextRoleManager nextRoleManager = Session[$"NextRoleManager{roleId}"] as NextRoleManager;
+            DocumentAssign documentAssign = _db.DocumentAssigns.Get("DocumentAssign.Id = @documentAssignId", new { documentAssignId }).FirstOrDefault();
 
-            if (_db.DocumentAssigns.CompletedBy(id, userId))
+            if (documentAssignId == null)
             {
-                int nextRoleId = nextRoleManager.Get(roleId);
-                if (nextRoleId != roleId)
+                documentAssign = new DocumentAssign()
                 {
-                    _db.DocumentAssigns.ForwardToNextRole(id, nextRoleId);
-                }
-                
+                    PurchasedByUserId = userId,
+                    AssignedToRoleId = roleId,
+                    Status = "Completed",
+                    DocumentId = id
+                };
+                _db.DocumentAssigns.Add(documentAssign);
+
+            }
+            else
+            {
+                documentAssign.Status = "Completed";
+                documentAssign.PurchasedByUserId = userId;
+                _db.DocumentAssigns.Update(documentAssign);
             }
             return Redirect(Request.UrlReferrer.ToString());
         }

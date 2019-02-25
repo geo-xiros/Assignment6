@@ -12,5 +12,6 @@ namespace Assignment6.ViewModels
         public int RoleId { get; set; }
 
         public IEnumerable<DocumentAssign> DocumentAssigns { get; set; }
+        public IEnumerable<Document> Documents { get; set; }
     }
 }
