@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Assignment6.Factories;
-
 namespace Assignment6.Controllers
 {
     public class LoginController : Controller
@@ -39,13 +37,6 @@ namespace Assignment6.Controllers
             }
 
             Session["user"] = loggedInUser;
-            NextRoleFactory nextRoleFactory = new FirstVersionRoleManagerFactory();
-
-            foreach (var role in loggedInUser.Roles)
-            {
-                var nextRoleManager = nextRoleFactory.MakeNextRoleManager(role.Name);
-                Session[$"NextRoleManager{role.Id}"] = nextRoleManager;
-            }
             Session["DefaultPendingDocuments"] = new DefaultPendingDocuments(loggedInUser.Id);
 
             return RedirectToAction("Index", "Home");
@@ -177,5 +168,14 @@ namespace Assignment6.Controllers
             return result;
 
         }
+    }
+    public enum Roles
+    {
+        Manager = 1,
+        Architect,
+        Analyst,
+        Programmer,
+        Tester
+
     }
 }
