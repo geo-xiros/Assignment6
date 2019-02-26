@@ -52,6 +52,7 @@ namespace Assignment6.Models
                             documentEntry.AssignedDocuments = new List<DocumentAssign>();
                             DocumentsDictionary.Add(document.Id, document); 
                         }
+
                         DocumentAssign documentAssignEntry;
 
                         if (!documentAssignsDictionary.TryGetValue(documentAssign.Id, out documentAssignEntry))
@@ -63,9 +64,9 @@ namespace Assignment6.Models
                             documentAssignsDictionary.Add(documentAssign.Id, documentAssign);
                         }
 
-                        if (documentAssign != null)
+                        if (documentAssignEntry != null)
                         {
-                            documentEntry.AssignedDocuments.Add(documentAssign);
+                            documentEntry.AssignedDocuments.Add(documentAssignEntry);
                         }
 
                         return documentEntry;
