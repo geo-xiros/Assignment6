@@ -8,14 +8,12 @@ namespace Assignment6.Factories
 {
     public class DefaultPendingDocuments
     {
-        public Dictionary<string, PendingDocuments> pendingDocumentsByRole;
+        public Dictionary<string, PendingDocuments> pendingDocumentsByRole = new Dictionary<string, PendingDocuments>();
 
-        public DefaultPendingDocuments(int userId)
+        public DefaultPendingDocuments(ApplicationDbContext db, int userId)
         {
-            ApplicationDbContext db = new ApplicationDbContext();
-            pendingDocumentsByRole = new Dictionary<string, PendingDocuments>();
 
-            pendingDocumentsByRole.Add(Roles.Analyst.ToString(), new AnalystPendingDocuments(db, userId,Roles.Analyst));
+            pendingDocumentsByRole.Add(Roles.Analyst.ToString(), new AnalystPendingDocuments(db, userId, Roles.Analyst));
             pendingDocumentsByRole.Add(Roles.Architect.ToString(), new ArchitectPendingDocuments(db, userId, Roles.Architect));
             pendingDocumentsByRole.Add(Roles.Programmer.ToString(), new ProgrammerPendingDocuments(db, userId, Roles.Programmer));
             pendingDocumentsByRole.Add(Roles.Tester.ToString(), new TesterPendingDocuments(db, userId, Roles.Tester));
@@ -56,8 +54,8 @@ namespace Assignment6.Factories
         {
             return _db.Documents
                 .Get()
-                .Where(d => 
-                    d.IsCompletedByRole.Where(CompletedTasks).Count() == 1 || 
+                .Where(d =>
+                    d.IsCompletedByRole.Where(CompletedTasks).Count() == 1 ||
                     d.AssignedDocuments.Any(PendingOwnedTasks));
         }
         private bool CompletedTasks(KeyValuePair<int, bool> task)
@@ -96,7 +94,7 @@ namespace Assignment6.Factories
                     d.IsCompletedByRole.Where(CompletedTasks).Count() == 3 ||
                     d.AssignedDocuments.Any(PendingOwnedTasks));
         }
-        private  bool CompletedTasks(KeyValuePair<int, bool> task)
+        private bool CompletedTasks(KeyValuePair<int, bool> task)
         {
             return (task.Key == (int)Roles.Analyst && task.Value == true) ||
                    (task.Key == (int)Roles.Architect && task.Value == true) ||

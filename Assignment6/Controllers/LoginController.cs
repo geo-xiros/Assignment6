@@ -33,7 +33,7 @@ namespace Assignment6.Controllers
             }
 
             Session["user"] = loggedInUser;
-            Session["DefaultPendingDocuments"] = new DefaultPendingDocuments(loggedInUser.Id);
+            Session["DefaultPendingDocuments"] = new DefaultPendingDocuments(_db,loggedInUser.Id);
 
             return RedirectToAction("Index", "Home");
         }
