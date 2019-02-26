@@ -15,4 +15,14 @@ namespace Assignment6.Models
         public bool Registered { get; set; }
 
     }
+
+    public enum Roles
+    {
+        Manager = 1,
+        Architect,
+        Analyst,
+        Programmer,
+        Tester
+
+    }
 }

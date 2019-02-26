@@ -50,7 +50,7 @@ namespace Assignment6.Models
                         {
                             documentEntry = document;
                             documentEntry.AssignedDocuments = new List<DocumentAssign>();
-                            DocumentsDictionary.Add(document.Id, document); 
+                            DocumentsDictionary.Add(document.Id, document);
                         }
 
                         DocumentAssign documentAssignEntry;
@@ -66,6 +66,7 @@ namespace Assignment6.Models
 
                         if (documentAssignEntry != null)
                         {
+                            documentEntry.IsCompletedByRole[documentAssignEntry.AssignedToRoleId] = documentAssignEntry.Status == "Completed";
                             documentEntry.AssignedDocuments.Add(documentAssignEntry);
                         }
 

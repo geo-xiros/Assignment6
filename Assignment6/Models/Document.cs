@@ -7,9 +7,18 @@ namespace Assignment6.Models
 
     public class Document : IEqualityComparer<Document>
     {
+        public Dictionary<int, bool> IsCompletedByRole { get; set; }
+
         public Document()
         {
             AssignedDocuments = new List<DocumentAssign>();
+            IsCompletedByRole = new Dictionary<int, bool>()
+            {
+                { (int)Roles.Analyst,false },
+                { (int)Roles.Architect,false },
+                { (int)Roles.Programmer,false },
+                { (int)Roles.Tester,false }
+            };
         }
         public int Id { get; set; }
 

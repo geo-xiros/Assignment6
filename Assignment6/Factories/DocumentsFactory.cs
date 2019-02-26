@@ -125,14 +125,69 @@ namespace Assignment6.Factories
 
         }
     }
-    public enum Roles
-    {
-        Manager = 1,
-        Architect,
-        Analyst,
-        Programmer,
-        Tester
 
-    }
 
 }
+
+
+//static void Main(string[] args)
+//{
+//    List<Doc> docs = new List<Doc>()
+//            {
+//                new Doc(){
+//                    id = 1,
+//                    completedTasks = new Dictionary<int, bool>()
+//                    {
+//                        { 1, true },
+//                        { 2, true },
+//                        { 3, true },
+//                        { 4, false }
+//                    }
+//                },
+//                new Doc(){
+//                    id = 2,
+//                    completedTasks = new Dictionary<int, bool>()
+//                    {
+//                        { 1, false },
+//                        { 2, true },
+//                        { 3, true },
+//                        { 4, true }
+//                    }
+//                }
+
+//            };
+
+//    var x1 = docs.Where(d => d.completedTasks.Where(SecondRoleTasks).Count() == 2);
+//    var x2 = docs.Where(d => d.completedTasks.Where(ThirdRoleTasks).Count() == 3);
+//    var x3 = docs.Where(d => d.completedTasks.Where(FourthRoleTasks).Count() == 3);
+
+//    Console.WriteLine($"x1={x1.FirstOrDefault()?.id}, count={x1.Count()}");
+//    Console.WriteLine($"x2={x2.FirstOrDefault()?.id}, count={x2.Count()}");
+//    Console.WriteLine($"x3={x3.FirstOrDefault()?.id}, count={x3.Count()}");
+
+//    Console.ReadKey();
+//}
+//public class Doc
+//{
+//    public int id { get; set; }
+//    public Dictionary<int, bool> completedTasks;
+//}
+
+//public static bool SecondRoleTasks(KeyValuePair<int, bool> role)
+//{
+//    return (role.Key == 1 && role.Value == true) ||
+//           (role.Key == 2 && role.Value == false);
+//}
+//public static bool ThirdRoleTasks(KeyValuePair<int, bool> role)
+//{
+//    return (role.Key == 1 && role.Value == true) ||
+//           (role.Key == 2 && role.Value == true) ||
+//           (role.Key == 3 && role.Value == false);
+//}
+//public static bool FourthRoleTasks(KeyValuePair<int, bool> role)
+//{
+//    return (role.Key == 1 && role.Value == true) ||
+//           (role.Key == 2 && role.Value == true) ||
+//           (role.Key == 3 && role.Value == true) ||
+//           (role.Key == 4 && role.Value == false);
+//}
