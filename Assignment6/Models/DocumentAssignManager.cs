@@ -102,13 +102,27 @@ namespace Assignment6.Models
         {
             if (!Find(id, out DocumentAssign documentAssign))
             {
-                documentAssign = new DocumentAssign()
-                {
-                    AssignedToRoleId = roleId,
-                    DocumentId = documentId
-                };
+                return false;
             }
 
+            // If that is not current user AssignedDocument record then
+            // create a new one purchashed by current user and role
+            // with completed status
+            if (documentAssign.Status == "Completed" && 
+                documentAssign.PurchasedByUserId != byUserId)
+            {
+                return Add(new DocumentAssign()
+                {
+                    AssignedToRoleId = roleId,
+                    PurchasedByUserId = byUserId,
+                    DocumentId = documentId,
+                    Status = "Completed"
+
+                }) != null;
+
+            }
+
+            // update completed status and purchashed user 
             documentAssign.Status = "Completed";
             documentAssign.PurchasedByUserId = byUserId;
 
