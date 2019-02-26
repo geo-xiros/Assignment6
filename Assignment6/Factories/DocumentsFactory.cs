@@ -34,6 +34,12 @@ namespace Assignment6.Factories
         protected ApplicationDbContext _db;
         protected int _userId;
         protected int _role;
+        public PendingDocuments(ApplicationDbContext db, int userId, Roles role)
+        {
+            _db = db;
+            _userId = userId;
+            _role = (int)role;
+        }
         public abstract IEnumerable<Document> GetDocuments();
         protected bool PendingOwnedTasks(DocumentAssign documentAssign)
         {
@@ -45,12 +51,7 @@ namespace Assignment6.Factories
 
     public class AnalystPendingDocuments : PendingDocuments
     {
-        public AnalystPendingDocuments(ApplicationDbContext db, int userId, Roles role)
-        {
-            _db = db;
-            _userId = userId;
-            _role = (int)role;
-        }
+        public AnalystPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role) { }
         public override IEnumerable<Document> GetDocuments()
         {
             return _db.Documents
@@ -67,12 +68,7 @@ namespace Assignment6.Factories
 
     public class ArchitectPendingDocuments : PendingDocuments
     {
-        public ArchitectPendingDocuments(ApplicationDbContext db, int userId, Roles role)
-        {
-            _db = db;
-            _userId = userId;
-            _role = (int)role;
-        }
+        public ArchitectPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role) { }
         public override IEnumerable<Document> GetDocuments()
         {
             return _db.Documents
@@ -91,12 +87,7 @@ namespace Assignment6.Factories
 
     public class ProgrammerPendingDocuments : PendingDocuments
     {
-        public ProgrammerPendingDocuments(ApplicationDbContext db, int userId, Roles role)
-        {
-            _db = db;
-            _userId = userId;
-            _role = (int)role;
-        }
+        public ProgrammerPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role) { }
         public override IEnumerable<Document> GetDocuments()
         {
             return _db.Documents
@@ -116,12 +107,7 @@ namespace Assignment6.Factories
 
     public class TesterPendingDocuments : PendingDocuments
     {
-        public TesterPendingDocuments(ApplicationDbContext db, int userId, Roles role)
-        {
-            _db = db;
-            _userId = userId;
-            _role = (int)role;
-        }
+        public TesterPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role) { }
         public override IEnumerable<Document> GetDocuments()
         {
             return _db.Documents
