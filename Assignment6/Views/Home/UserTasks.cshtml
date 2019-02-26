@@ -1,7 +1,9 @@
 ﻿@model Assignment6.ViewModels.UserTaskView
 
 @{
-    ViewBag.Title = ViewBag.Status + " Tasks";
+                /**/
+
+                ViewBag.Title = ViewBag.Status + " Tasks";
 }
 
 <h2>@ViewBag.Status @ViewBag.Role Tasks</h2>
@@ -25,15 +27,15 @@
                 <div class="col-9">
                     <h4>@Html.DisplayFor(modelItem => item.Title)</h4>
                     @*@if (!ViewBag.Pending)
-                    {
-                        <small class="text-muted">Completed by @Html.DisplayFor(modelItem => item.PurchasedByUser.Username)</small>
-                    }*@
+                        {
+                            <small class="text-muted">Completed by @Html.DisplayFor(modelItem => item.PurchasedByUser.Username)</small>
+                        }*@
 
                 </div>
                 @if (ViewBag.Pending)
                 {
                     <div class="col-1">
-                        @Html.ActionLink("Complete", "Complete", new { Id = item.Id, documentAssignId =item.AssignedDocuments.FirstOrDefault()?.Id, roleId = Model.RoleId, userId = Model.UserId }, htmlAttributes: new { @class = "btn btn-success" })
+                        @Html.ActionLink("Complete", "Complete", new { Id = item.Id, documentAssignId = item.AssignedDocuments.FirstOrDefault()?.Id, roleId = Model.RoleId, userId = Model.UserId }, htmlAttributes: new { @class = "btn btn-success" })
                     </div>
                 }
                 <div class="col-1 " id="@item.Id" UserId="@Model.UserId" body="@item.Body" title="@item.Title">
@@ -67,7 +69,7 @@
                 if (this.checkValidity() === true) {
 
                     newBody.val(editor1.getData());
-                    
+
                     $.post($(this).attr('action'), $(this).serialize(), function (data) {
                         $('#tasks-list').prepend(data);
                         addModal.modal('hide');
