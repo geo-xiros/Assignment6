@@ -47,7 +47,11 @@ namespace Assignment6.Factories
         {
             return _db.Documents
                 .Get()
-                .Where(d => d.AssignedDocuments.Any(a => (a.AssignedToRoleId == (int)Roles.Analyst && a.Status == "Pending" && a.PurchasedByUserId == _userId)));
+                .Where(d => d.AssignedDocuments.Any(PendingOwnedDocument));
+        }
+        private bool PendingOwnedDocument(DocumentAssign documentAssign)
+        {
+            return documentAssign.AssignedToRoleId == (int)Roles.Analyst && documentAssign.Status == "Pending" && documentAssign.PurchasedByUserId == _userId;
         }
     }
 
@@ -60,17 +64,23 @@ namespace Assignment6.Factories
         }
         public override IEnumerable<Document> GetDocuments()
         {
-            var result = _db.Documents
+            var x = _db.Documents
                 .Get()
                 .Where(d =>
-                    d.AssignedDocuments.Any(a =>
-                         (a.AssignedToRoleId == (int)Roles.Analyst && a.Status == "Completed") ||
-                         (a.AssignedToRoleId == (int)Roles.Architect && a.Status == "Pending" && a.PurchasedByUserId == _userId))
-                    ).Distinct()
-                .ToList();
-            result.RemoveAll(d => d.AssignedDocuments.Any(a => a.AssignedToRoleId == (int)Roles.Architect && a.Status == "Completed"));
-
-            return result;
+                    d.IsCompletedByRole.Where(CompletedAnalystTasks).Count() == 2 ||
+                    d.AssignedDocuments.Any(PendingOwnedDocument));
+            return x;
+        }
+        private static bool CompletedAnalystTasks(KeyValuePair<int, bool> task)
+        {
+            return (task.Key == (int)Roles.Analyst && task.Value == true) ||
+                   (task.Key == (int)Roles.Architect && task.Value == false);
+        }
+        private bool PendingOwnedDocument(DocumentAssign documentAssign)
+        {
+            return documentAssign.AssignedToRoleId == (int)Roles.Architect &&
+                documentAssign.PurchasedByUserId == _userId &&
+                documentAssign.Status == "Pending";
         }
     }
 
