@@ -58,7 +58,7 @@ namespace Assignment6.Factories
                     d.IsCompletedByRole.Where(CompletedTasks).Count() == 1 ||
                     d.AssignedDocuments.Any(PendingOwnedTasks));
         }
-        private bool CompletedTasks(KeyValuePair<int, bool> task)
+        private bool CompletedTasks(KeyValuePair<int, int> task)
         {
             return (task.Key == 0);
         }
@@ -75,10 +75,10 @@ namespace Assignment6.Factories
                     d.IsCompletedByRole.Where(CompletedTasks).Count() == 2 ||
                     d.AssignedDocuments.Any(PendingOwnedTasks));
         }
-        private bool CompletedTasks(KeyValuePair<int, bool> task)
+        private bool CompletedTasks(KeyValuePair<int, int> task)
         {
-            return (task.Key == (int)Roles.Analyst && task.Value == true) ||
-                   (task.Key == (int)Roles.Architect && task.Value == false);
+            return (task.Key == (int)Roles.Analyst && (task.Value == 1)) ||
+                   (task.Key == (int)Roles.Architect && task.Value == 0);
         }
 
     }
@@ -94,11 +94,11 @@ namespace Assignment6.Factories
                     d.IsCompletedByRole.Where(CompletedTasks).Count() == 3 ||
                     d.AssignedDocuments.Any(PendingOwnedTasks));
         }
-        private bool CompletedTasks(KeyValuePair<int, bool> task)
+        private bool CompletedTasks(KeyValuePair<int, int> task)
         {
-            return (task.Key == (int)Roles.Analyst && task.Value == true) ||
-                   (task.Key == (int)Roles.Architect && task.Value == true) ||
-                   (task.Key == (int)Roles.Programmer && task.Value == false);
+            return (task.Key == (int)Roles.Analyst && (task.Value == 1 || task.Value == 0)) ||
+                   (task.Key == (int)Roles.Architect && (task.Value == 1 )) ||
+                   (task.Key == (int)Roles.Programmer && task.Value == 0);
         }
 
     }
@@ -114,12 +114,12 @@ namespace Assignment6.Factories
                     d.IsCompletedByRole.Where(CompletedTasks).Count() == 4 ||
                     d.AssignedDocuments.Any(PendingOwnedTasks));
         }
-        private bool CompletedTasks(KeyValuePair<int, bool> task)
+        private bool CompletedTasks(KeyValuePair<int, int> task)
         {
-            return (task.Key == (int)Roles.Analyst && task.Value == true) ||
-                   (task.Key == (int)Roles.Architect && task.Value == true) ||
-                   (task.Key == (int)Roles.Programmer && task.Value == true) ||
-                   (task.Key == (int)Roles.Tester && task.Value == false);
+            return (task.Key == (int)Roles.Analyst && (task.Value == 1|| task.Value == 0)) ||
+                   (task.Key == (int)Roles.Architect && (task.Value == 1 || task.Value == 0)) ||
+                   (task.Key == (int)Roles.Programmer && (task.Value == 1 )) ||
+                   (task.Key == (int)Roles.Tester && task.Value == 0);
         }
 
     }
