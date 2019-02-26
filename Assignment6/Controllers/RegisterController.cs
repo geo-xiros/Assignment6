@@ -19,18 +19,18 @@ namespace Assignment6.Controllers
         [HttpPost]
         public ActionResult Register(Registration registrationUser)
         {
-            RegistrationFacade registrationFacade = new RegistrationFacade(_db);
-            string message = string.Empty;
 
-            if (!registrationFacade.Register(registrationUser, out message))
+            if (!_db.Registrations.Register(registrationUser, out string message))
             {
                 ViewBag.RoleId = new SelectList(_db.Roles.Get(), "Id", "Name");
                 ModelState.AddModelError("Username", message);
+
                 return View("Index", registrationUser);
             }
+
             TempData["RegistrationInfo"] = message;
-            
-            return RedirectToAction("Index","Home" );
+
+            return RedirectToAction("Index", "Home");
         }
 
     }
