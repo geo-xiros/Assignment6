@@ -8,28 +8,27 @@ namespace Assignment6.Factories
 {
     public abstract class DocumentsFactory
     {
-        public Dictionary<string, DocumentsManager> DocumentsByRole = new Dictionary<string, DocumentsManager>();
+        protected Dictionary<string, DocumentsManager> _documentsByRole = new Dictionary<string, DocumentsManager>();
         public abstract DocumentsManager this[string role] { get; }
     }
 
     public class DefaultPendingDocuments : DocumentsFactory
     {
-        public Dictionary<string, DocumentsManager> pendingDocumentsByRole = new Dictionary<string, DocumentsManager>();
 
         public DefaultPendingDocuments(ApplicationDbContext db, int userId)
         {
 
-            pendingDocumentsByRole.Add(Roles.Analyst.ToString(), new AnalystPendingDocuments(db, userId, Roles.Analyst));
-            pendingDocumentsByRole.Add(Roles.Architect.ToString(), new ArchitectPendingDocuments(db, userId, Roles.Architect));
-            pendingDocumentsByRole.Add(Roles.Programmer.ToString(), new ProgrammerPendingDocuments(db, userId, Roles.Programmer));
-            pendingDocumentsByRole.Add(Roles.Tester.ToString(), new TesterPendingDocuments(db, userId, Roles.Tester));
+            _documentsByRole.Add(Roles.Analyst.ToString(), new AnalystPendingDocuments(db, userId, Roles.Analyst));
+            _documentsByRole.Add(Roles.Architect.ToString(), new ArchitectPendingDocuments(db, userId, Roles.Architect));
+            _documentsByRole.Add(Roles.Programmer.ToString(), new ProgrammerPendingDocuments(db, userId, Roles.Programmer));
+            _documentsByRole.Add(Roles.Tester.ToString(), new TesterPendingDocuments(db, userId, Roles.Tester));
 
         }
         public override DocumentsManager this[string role]
         {
             get
             {
-                return pendingDocumentsByRole[role];
+                return _documentsByRole[role];
             }
         }
     }
@@ -41,17 +40,17 @@ namespace Assignment6.Factories
         public DefaultCompletedDocuments(ApplicationDbContext db, int userId)
         {
 
-            DocumentsByRole.Add(Roles.Analyst.ToString(), new CompletedDocuments(db, userId, Roles.Analyst));
-            DocumentsByRole.Add(Roles.Architect.ToString(), new CompletedDocuments(db, userId, Roles.Architect));
-            DocumentsByRole.Add(Roles.Programmer.ToString(), new CompletedDocuments(db, userId, Roles.Programmer));
-            DocumentsByRole.Add(Roles.Tester.ToString(), new CompletedDocuments(db, userId, Roles.Tester));
+            _documentsByRole.Add(Roles.Analyst.ToString(), new CompletedDocuments(db, userId, Roles.Analyst));
+            _documentsByRole.Add(Roles.Architect.ToString(), new CompletedDocuments(db, userId, Roles.Architect));
+            _documentsByRole.Add(Roles.Programmer.ToString(), new CompletedDocuments(db, userId, Roles.Programmer));
+            _documentsByRole.Add(Roles.Tester.ToString(), new CompletedDocuments(db, userId, Roles.Tester));
 
         }
         public override DocumentsManager this[string role]
         {
             get
             {
-                return DocumentsByRole[role];
+                return _documentsByRole[role];
             }
         }
     }
