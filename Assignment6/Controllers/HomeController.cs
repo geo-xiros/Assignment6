@@ -38,14 +38,15 @@ namespace Assignment6.Controllers
 
             if (role == "Manager")
             {
-                var usersRegistrations = _db
-                    .Registrations
-                    .Get(status == "Pending" ? "RegisteredByUserId Is Null" : "RegisteredByUserId Is Not Null")
-                    .OrderBy(r => r.UserId)
-                    .ThenBy(r => r.RoleId);
-                return View("UsersRegistrations", usersRegistrations);
+                return ManagerView(status);
             }
 
+            return UsersView(status, role);
+
+        }
+
+        private ActionResult UsersView(string status, string role)
+        {
             User loggedUser = Session["user"] as User;
             DocumentsFactory defaultDocuments = Session[$"{status}Documents"] as DocumentsFactory;
 
@@ -67,7 +68,16 @@ namespace Assignment6.Controllers
 
 
             return View("UserTasks", userTaskView);
+        }
 
+        private ActionResult ManagerView(string status)
+        {
+            var usersRegistrations = _db
+                .Registrations
+                .Get(status == "Pending" ? "RegisteredByUserId Is Null" : "RegisteredByUserId Is Not Null")
+                .OrderBy(r => r.UserId)
+                .ThenBy(r => r.RoleId);
+            return View("UsersRegistrations", usersRegistrations);
         }
 
         [Authorize(Roles = "Manager")]
