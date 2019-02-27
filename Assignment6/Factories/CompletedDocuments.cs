@@ -6,11 +6,11 @@ using System.Web;
 
 namespace Assignment6.Factories
 {
-    public class CompletedDocuments : PendingDocuments
+    public class CompletedDocuments : DocumentsManager
     {
         public CompletedDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 0) { }
 
-        public override IEnumerable<Document> GetDocuments()
+        public override IEnumerable<Document> Get()
         {
             return _db.Documents
                 .Get("AssignedToRoleId=@_roleId And PurchasedByUserId=@_userId AND Status='Completed'",

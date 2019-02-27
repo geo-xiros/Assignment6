@@ -8,13 +8,13 @@ namespace Assignment6.Factories
 {
     public abstract class DocumentsFactory
     {
-        public Dictionary<string, PendingDocuments> DocumentsByRole = new Dictionary<string, PendingDocuments>();
-        public abstract PendingDocuments this[string role] { get; }
+        public Dictionary<string, DocumentsManager> DocumentsByRole = new Dictionary<string, DocumentsManager>();
+        public abstract DocumentsManager this[string role] { get; }
     }
 
     public class DefaultPendingDocuments : DocumentsFactory
     {
-        public Dictionary<string, PendingDocuments> pendingDocumentsByRole = new Dictionary<string, PendingDocuments>();
+        public Dictionary<string, DocumentsManager> pendingDocumentsByRole = new Dictionary<string, DocumentsManager>();
 
         public DefaultPendingDocuments(ApplicationDbContext db, int userId)
         {
@@ -25,7 +25,7 @@ namespace Assignment6.Factories
             pendingDocumentsByRole.Add(Roles.Tester.ToString(), new TesterPendingDocuments(db, userId, Roles.Tester));
 
         }
-        public override PendingDocuments this[string role]
+        public override DocumentsManager this[string role]
         {
             get
             {
@@ -47,12 +47,49 @@ namespace Assignment6.Factories
             DocumentsByRole.Add(Roles.Tester.ToString(), new CompletedDocuments(db, userId, Roles.Tester));
 
         }
-        public override PendingDocuments this[string role]
+        public override DocumentsManager this[string role]
         {
             get
             {
                 return DocumentsByRole[role];
             }
+        }
+    }
+
+    public abstract class DocumentsManager
+    {
+        protected ApplicationDbContext _db;
+        protected int _userId;
+        protected int _roleId;
+        protected int _maxCountOfDocumentsForCreteria;
+
+        public DocumentsManager(ApplicationDbContext db, int userId, Roles role, int maxCountOfDocumentsForCreteria)
+        {
+            _db = db;
+            _userId = userId;
+            _roleId = (int)role;
+            _maxCountOfDocumentsForCreteria = maxCountOfDocumentsForCreteria;
+        }
+
+        public virtual IEnumerable<Document> Get()
+        {
+            return _db.Documents
+                .Get()
+                .Where(d =>
+                    d.IsCompletedByRole.Where(DocumentsToPurchase).Count() == _maxCountOfDocumentsForCreteria ||
+                    d.AssignedDocuments.Any(PendingOwnedTasks));
+        }
+
+        protected virtual bool DocumentsToPurchase(KeyValuePair<int, int> task)
+        {
+            return false;
+        }
+
+        private bool PendingOwnedTasks(DocumentAssign documentAssign)
+        {
+            return documentAssign.AssignedToRoleId == _roleId &&
+                documentAssign.PurchasedByUserId == _userId &&
+                documentAssign.Status == "Pending";
         }
     }
 

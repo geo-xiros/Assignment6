@@ -7,41 +7,53 @@ using Assignment6.Models;
 namespace Assignment6.Factories
 {
 
-    public abstract class PendingDocuments
+
+
+    public class AnalystPendingDocuments : DocumentsManager
     {
-        protected ApplicationDbContext _db;
-        protected int _userId;
-        protected int _roleId;
-        protected int _maxCountOfDocumentsForCreteria;
-
-        public PendingDocuments(ApplicationDbContext db, int userId, Roles role, int maxCountOfDocumentsForCreteria)
+        public AnalystPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 1) { }
+        protected override bool DocumentsToPurchase(KeyValuePair<int, int> task)
         {
-            _db = db;
-            _userId = userId;
-            _roleId = (int)role;
-            _maxCountOfDocumentsForCreteria = maxCountOfDocumentsForCreteria;
-        }
-
-        public virtual IEnumerable<Document> GetDocuments()
-        {
-            return _db.Documents
-                .Get()
-                .Where(d =>
-                    d.IsCompletedByRole.Where(DocumentsToPurchase).Count() == _maxCountOfDocumentsForCreteria ||
-                    d.AssignedDocuments.Any(PendingOwnedTasks));
-        }
-
-        protected virtual bool DocumentsToPurchase(KeyValuePair<int, int> task)
-        {
-            return false;
-        }
-
-        private bool PendingOwnedTasks(DocumentAssign documentAssign)
-        {
-            return documentAssign.AssignedToRoleId == _roleId &&
-                documentAssign.PurchasedByUserId == _userId &&
-                documentAssign.Status == "Pending";
+            return (task.Key == 0);
         }
     }
 
+    public class ArchitectPendingDocuments : DocumentsManager
+    {
+        public ArchitectPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 2) { }
+
+        protected override bool DocumentsToPurchase(KeyValuePair<int, int> task)
+        {
+            return (task.Key == (int)Roles.Analyst && (task.Value == 1)) ||
+                   (task.Key == (int)Roles.Architect && task.Value == 0);
+        }
+
+    }
+
+    public class ProgrammerPendingDocuments : DocumentsManager
+    {
+        public ProgrammerPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 3) { }
+
+        protected override bool DocumentsToPurchase(KeyValuePair<int, int> task)
+        {
+            return (task.Key == (int)Roles.Analyst && (task.Value == 1 || task.Value == 0)) ||
+                   (task.Key == (int)Roles.Architect && (task.Value == 1)) ||
+                   (task.Key == (int)Roles.Programmer && task.Value == 0);
+        }
+
+    }
+
+    public class TesterPendingDocuments : DocumentsManager
+    {
+        public TesterPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 4) { }
+
+        protected override bool DocumentsToPurchase(KeyValuePair<int, int> task)
+        {
+            return (task.Key == (int)Roles.Analyst && (task.Value == 1 || task.Value == 0)) ||
+                   (task.Key == (int)Roles.Architect && (task.Value == 1 || task.Value == 0)) ||
+                   (task.Key == (int)Roles.Programmer && (task.Value == 1)) ||
+                   (task.Key == (int)Roles.Tester && task.Value == 0);
+        }
+
+    }
 }

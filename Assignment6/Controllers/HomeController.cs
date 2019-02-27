@@ -62,8 +62,8 @@ namespace Assignment6.Controllers
                 RoleId = RoleId
             };
 
-            PendingDocuments pendingDocuments = defaultDocuments[role];
-            userTaskView.Documents = pendingDocuments.GetDocuments();
+            DocumentsManager pendingDocuments = defaultDocuments[role];
+            userTaskView.Documents = pendingDocuments.Get();
 
 
             return View("UserTasks", userTaskView);
