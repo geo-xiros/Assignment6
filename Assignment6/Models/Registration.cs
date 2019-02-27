@@ -14,7 +14,10 @@ namespace Assignment6.Models
 
         [Required]
         public string Username { get; set; }
+
+        [Required]
         public string Password { get; set; }
+        [Required]
         public int RoleId { get; set; }
         public string Role { get; set; }
         public IEnumerable<Role> Roles { get; set; }
