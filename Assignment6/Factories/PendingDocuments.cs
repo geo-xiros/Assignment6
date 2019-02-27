@@ -11,31 +11,34 @@ namespace Assignment6.Factories
     {
         protected ApplicationDbContext _db;
         protected int _userId;
-        protected int _role;
+        protected int _roleId;
         protected int _maxCountOfDocumentsForCreteria;
 
         public PendingDocuments(ApplicationDbContext db, int userId, Roles role, int maxCountOfDocumentsForCreteria)
         {
             _db = db;
             _userId = userId;
-            _role = (int)role;
+            _roleId = (int)role;
             _maxCountOfDocumentsForCreteria = maxCountOfDocumentsForCreteria;
         }
 
-        public IEnumerable<Document> GetDocuments()
+        public virtual IEnumerable<Document> GetDocuments()
         {
             return _db.Documents
                 .Get()
                 .Where(d =>
-                    d.IsCompletedByRole.Where(CompletedDocuments).Count() == _maxCountOfDocumentsForCreteria ||
+                    d.IsCompletedByRole.Where(DocumentsToPurchase).Count() == _maxCountOfDocumentsForCreteria ||
                     d.AssignedDocuments.Any(PendingOwnedTasks));
         }
 
-        protected abstract bool CompletedDocuments(KeyValuePair<int, int> task);
+        protected virtual bool DocumentsToPurchase(KeyValuePair<int, int> task)
+        {
+            return false;
+        }
 
         private bool PendingOwnedTasks(DocumentAssign documentAssign)
         {
-            return documentAssign.AssignedToRoleId == _role &&
+            return documentAssign.AssignedToRoleId == _roleId &&
                 documentAssign.PurchasedByUserId == _userId &&
                 documentAssign.Status == "Pending";
         }

@@ -164,6 +164,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Factories\ArchitectPendingDocuments.cs" />
+    <Compile Include="Factories\CompletedDocuments.cs" />
     <Compile Include="Factories\TesterPendingDocuments.cs" />
     <Compile Include="Factories\ProgrammerPendingDocuments.cs" />
     <Compile Include="Factories\AnalystPendingDocuments.cs" />

@@ -31,7 +31,6 @@ namespace Assignment6.Controllers
         public ActionResult Tasks(string status, string role)
         {
 
-
             ViewBag.Title = $"{status} Tasks for {role}";
             ViewBag.Status = status;
             ViewBag.Role = role;
@@ -48,9 +47,9 @@ namespace Assignment6.Controllers
             }
 
             User loggedUser = Session["user"] as User;
-            DefaultPendingDocuments defaultPendingDocuments = Session["DefaultPendingDocuments"] as DefaultPendingDocuments;
+            DocumentsFactory defaultDocuments = Session[$"{status}Documents"] as DocumentsFactory;
 
-            if (loggedUser == null || defaultPendingDocuments == null)
+            if (loggedUser == null || defaultDocuments == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -60,28 +59,12 @@ namespace Assignment6.Controllers
             UserTaskView userTaskView = new UserTaskView()
             {
                 UserId = loggedUser.Id,
-                RoleId = loggedUser.Roles.FirstOrDefault(r => r.Name.Equals(role))?.Id ?? 0
+                RoleId = RoleId
             };
 
-            // TODO:
-            // Completed Documents 
-            if (status == "Pending")
-            {
-                PendingDocuments pendingDocuments = defaultPendingDocuments[role];
+            PendingDocuments pendingDocuments = defaultDocuments[role];
+            userTaskView.Documents = pendingDocuments.GetDocuments();
 
-                userTaskView.Documents = pendingDocuments.GetDocuments();
-
-            }
-            else
-            {
-                userTaskView.Documents = _db.Documents
-                    .Get()
-                    .Where(d =>
-                        d.AssignedDocuments.Any(a =>
-                            a.PurchasedByUserId == loggedUser.Id &&
-                            a.AssignedToRoleId == RoleId &&
-                            a.Status == "Completed"));
-            }
 
             return View("UserTasks", userTaskView);
 
