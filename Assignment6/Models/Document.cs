@@ -7,17 +7,17 @@ namespace Assignment6.Models
 
     public class Document : IEqualityComparer<Document>
     {
-        public Dictionary<int, int> IsCompletedByRole { get; set; }
+        public Dictionary<int, DocumentAssignStatus> IsCompletedByRole { get; set; }
 
         public Document()
         {
             AssignedDocuments = new List<DocumentAssign>();
-            IsCompletedByRole = new Dictionary<int, int>()
+            IsCompletedByRole = new Dictionary<int, DocumentAssignStatus>()
             {
-                { (int)Roles.Analyst,0 },
-                { (int)Roles.Architect,0 },
-                { (int)Roles.Programmer,0 },
-                { (int)Roles.Tester,0 }
+                { (int)Roles.Analyst, DocumentAssignStatus.NotAssigned },
+                { (int)Roles.Architect, DocumentAssignStatus.NotAssigned },
+                { (int)Roles.Programmer, DocumentAssignStatus.NotAssigned },
+                { (int)Roles.Tester, DocumentAssignStatus.NotAssigned }
             };
         }
         public int Id { get; set; }
@@ -37,5 +37,11 @@ namespace Assignment6.Models
         {
             return obj.Id.GetHashCode();
         }
+    }
+    public enum DocumentAssignStatus
+    {
+        NotAssigned,
+        Completed,
+        Pending        
     }
 }

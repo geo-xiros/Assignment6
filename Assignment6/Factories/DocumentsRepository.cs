@@ -31,7 +31,7 @@ namespace Assignment6.Factories
                     d.AssignedDocuments.Any(PendingOwnedTasks));
         }
 
-        protected virtual bool DocumentsToPurchase(KeyValuePair<int, int> task)
+        protected virtual bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> task)
         {
             return false;
         }

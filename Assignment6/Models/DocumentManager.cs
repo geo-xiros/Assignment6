@@ -66,7 +66,11 @@ namespace Assignment6.Models
 
                         if (documentAssignEntry != null)
                         {
-                            documentEntry.IsCompletedByRole[documentAssignEntry.AssignedToRoleId] = documentAssignEntry.Status == "Completed" ? 1:2;
+                            documentEntry.IsCompletedByRole[documentAssignEntry.AssignedToRoleId] =
+                                documentAssignEntry.Status == "Completed"
+                                    ? DocumentAssignStatus.Completed
+                                    : DocumentAssignStatus.Pending;
+
                             documentEntry.AssignedDocuments.Add(documentAssignEntry);
                         }
 
