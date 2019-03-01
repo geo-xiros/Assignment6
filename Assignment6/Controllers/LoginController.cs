@@ -21,23 +21,32 @@ namespace Assignment6.Controllers
         public ActionResult Login(User user)
         {
             UserManager userManager = new UserManager(_db);
-
-            if (!userManager.Login(user.Username, user.Password, out User loggedInUser))
+            User loggedInUser;
+            if (!userManager.UserExists(user.Username, out loggedInUser))
             {
-                ModelState.AddModelError("Username",
-                    loggedInUser == null ?
-                    "Wrong username or password." :
-                    "Pending user role approval.");
-
+                ModelState.AddModelError("Username", "Wrong username or password.");
+                return View("Index", user);
+            }
+            if (!userManager.ValidateUser(user.Username, user.Password, out loggedInUser))
+            {
+                ModelState.AddModelError("Username", "Wrong username or password.");
                 return View("Index", user);
             }
 
-            var documents= new DocumentsFactory(_db, loggedInUser.Id);
+            // TODO
+            // Check if has at least one Approved role 
+            //if (!HasApprovedRole)
+            //{
+            //    ModelState.AddModelError("Username", "Pending Role to be approved.");
+            //    return View("Index", user);
+            //}
+            
+            var documents = new DocumentsFactory(_db, loggedInUser.Id);
 
             Session["user"] = loggedInUser;
             Session["PendingDocuments"] = documents.GetPending();
             Session["CompletedDocuments"] = documents.GetCompleted();
-            
+
             return RedirectToAction("Index", "Home");
         }
 

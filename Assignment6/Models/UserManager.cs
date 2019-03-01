@@ -61,33 +61,13 @@ namespace Assignment6.Models
             return users;
         }
 
-        /// <summary>
-        /// Finds a User using parameters Username and Password
-        /// on success the user is authenticated
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <param name="loggedInUser"></param>
-        /// <returns>true if user is authenticated with at least <string>one role</string>strong></returns>
-        public bool Login(string username, string password, out User loggedInUser)
-        {
-
-            if (!ValidateUser(username, password, out loggedInUser))
-            {
-                return false;
-            }
-
-            if (loggedInUser.Roles.Count == 0)
-            {
-                return false;
-            }
-
-            Authenticate(loggedInUser);
-
-            return true;
-        }
         private void Authenticate(User loggedInUser)
         {
+            if (loggedInUser == null)
+            {
+                return;
+            }
+
             var claims = new List<Claim>(new[]
             {
                     // adding following 2 claim just for supporting default antiforgery provider
@@ -113,6 +93,7 @@ namespace Assignment6.Models
             user = Get("Username=@username And Password=@password",
                 new { username, password })
                 .FirstOrDefault();
+            Authenticate(user);
             return user != null;
         }
         public bool UserExists(string username, out User user)
