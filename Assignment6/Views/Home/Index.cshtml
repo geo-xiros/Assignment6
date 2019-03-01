@@ -3,16 +3,27 @@
 }
 @if (ViewBag.RegistrationInfo != null)
 {
-<div class="alert alert-primary" role="alert">
-    @ViewBag.RegistrationInfo
-</div>
+    <div class="alert alert-primary" role="alert">
+        @ViewBag.RegistrationInfo
+    </div>
 }
 <div class="jumbotron">
     <h1>Welcome</h1>
-    <p>
-        Please <a href="/Register" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="You can register for multiple roles">Register</a>
-        to be able to work on your projects.
-    </p>
+
+    @if (Session["user"] == null)
+    {
+        <p>
+            Please <a href="/Register" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="You can register for multiple roles">Register</a>
+            to be able to work on your projects.
+        </p>
+    }
+    else
+    {
+        <p>
+            You can <a href="/Register" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="You can register for multiple roles">Register</a>
+            again to request another role just fill in your username and corrent password.
+        </p>
+    }
 
 </div>
 

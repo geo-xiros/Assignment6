@@ -2,10 +2,14 @@
 @using Assignment6.Models
 
 @{
-    ViewBag.Title = "Register";
+    var IsLoggedIn = Session["user"] == null;
+
+
+    ViewBag.Title = Session["user"] == null ? "Register": "Request another Role";
+
 }
 
-<h2>Register</h2>
+<h2>@ViewBag.Title</h2>
 
 
 @using (Html.BeginForm("Register", "Register"))
@@ -42,7 +46,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Register" class="btn btn-default" />
+                <input type="submit" value="@ViewBag.Title" class="btn btn-default" />
             </div>
         </div>
     </div>

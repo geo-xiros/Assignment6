@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<Assignment6.Models.Registration>
 @{
     ViewBag.Title = "Users Registrations";
+
 }
 <h2>@ViewBag.Status Users Registrations</h2>
 <table class="table">
@@ -29,10 +30,10 @@
     </tr>
     @foreach (var item in Model)
     {
-        string rowColor=string.Empty;
+        string rowColor = string.Empty;
         if (!ViewBag.Pending)
         {
-           rowColor = item.Status == "Approved" ? "table-success" : "table-danger";
+            rowColor = item.Status == "Approved" ? "table-success" : "table-danger";
         }
         <tr class="@rowColor">
             <td>
