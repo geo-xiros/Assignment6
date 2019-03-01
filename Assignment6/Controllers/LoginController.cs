@@ -22,25 +22,23 @@ namespace Assignment6.Controllers
         {
             UserManager userManager = new UserManager(_db);
             User loggedInUser;
-            if (!userManager.UserExists(user.Username, out loggedInUser))
-            {
-                ModelState.AddModelError("Username", "Wrong username or password.");
-                return View("Index", user);
-            }
-            if (!userManager.ValidateUser(user.Username, user.Password, out loggedInUser))
+
+            // Check username exists
+            // Check username and password
+            if (!userManager.UserExists(user.Username, out loggedInUser) ||
+                !userManager.ValidateUser(user.Username, user.Password, out loggedInUser))
             {
                 ModelState.AddModelError("Username", "Wrong username or password.");
                 return View("Index", user);
             }
 
-            // TODO
             // Check if has at least one Approved role 
-            //if (!HasApprovedRole)
-            //{
-            //    ModelState.AddModelError("Username", "Pending Role to be approved.");
-            //    return View("Index", user);
-            //}
-            
+            if (loggedInUser.Roles.Count()==0)
+            {
+                ModelState.AddModelError("Username", "Pending Role to be approved.");
+                return View("Index", user);
+            }
+
             var documents = new DocumentsFactory(_db, loggedInUser.Id);
 
             Session["user"] = loggedInUser;

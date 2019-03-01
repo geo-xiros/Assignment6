@@ -93,7 +93,9 @@ namespace Assignment6.Models
             user = Get("Username=@username And Password=@password",
                 new { username, password })
                 .FirstOrDefault();
+
             Authenticate(user);
+
             return user != null;
         }
         public bool UserExists(string username, out User user)

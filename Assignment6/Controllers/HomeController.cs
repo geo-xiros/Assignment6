@@ -89,6 +89,12 @@ namespace Assignment6.Controllers
             {
                 // TODO 
                 // Error Handling
+                return Redirect(Request.UrlReferrer.ToString());
+            }
+
+            if (_db.Registrations.Find(id ?? 0, out Registration registration))
+            {
+                _db.Users.AddUserRole(registration.UserId, registration.RoleId);
             }
 
             return Redirect(Request.UrlReferrer.ToString());
