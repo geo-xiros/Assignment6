@@ -185,7 +185,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AddDocumentView.cs" />
-    <Compile Include="ViewModels\RegisterUser.cs" />
     <Compile Include="ViewModels\UserTaskView.cs" />
   </ItemGroup>
   <ItemGroup>
