@@ -33,22 +33,5 @@ namespace Assignment6.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpPost]
-        public ActionResult RegisterAgain(Registration registrationUser)
-        {
-
-            if (!_db.Registrations.Register(registrationUser, out string message))
-            {
-                ViewBag.RoleId = new SelectList(_db.Roles.Get(), "Id", "Name");
-                ModelState.AddModelError("Username", message);
-
-                return View("Index", registrationUser);
-            }
-
-            TempData["RegistrationInfo"] = message;
-
-            return RedirectToAction("Index", "Home");
-        }
-
     }
 }
