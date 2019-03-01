@@ -7,9 +7,7 @@ using Assignment6.Models;
 namespace Assignment6.Factories
 {
 
-
-
-    public class AnalystPendingDocuments : DocumentsManager
+    public class AnalystPendingDocuments : DocumentsRepository
     {
         public AnalystPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 1) { }
         protected override bool DocumentsToPurchase(KeyValuePair<int, int> task)
@@ -18,7 +16,7 @@ namespace Assignment6.Factories
         }
     }
 
-    public class ArchitectPendingDocuments : DocumentsManager
+    public class ArchitectPendingDocuments : DocumentsRepository
     {
         public ArchitectPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 2) { }
 
@@ -30,7 +28,7 @@ namespace Assignment6.Factories
 
     }
 
-    public class ProgrammerPendingDocuments : DocumentsManager
+    public class ProgrammerPendingDocuments : DocumentsRepository
     {
         public ProgrammerPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 3) { }
 
@@ -43,7 +41,7 @@ namespace Assignment6.Factories
 
     }
 
-    public class TesterPendingDocuments : DocumentsManager
+    public class TesterPendingDocuments : DocumentsRepository
     {
         public TesterPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 4) { }
 

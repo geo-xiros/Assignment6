@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Assignment6.Factories
 {
-    public class CompletedDocuments : DocumentsManager
+    public class CompletedDocuments : DocumentsRepository
     {
         public CompletedDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 0) { }
 

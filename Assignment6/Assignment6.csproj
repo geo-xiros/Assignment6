@@ -164,6 +164,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Factories\CompletedDocuments.cs" />
+    <Compile Include="Factories\DocumentsRepository.cs" />
     <Compile Include="Factories\PendingDocuments.cs" />
     <Compile Include="Factories\DocumentsFactory.cs" />
     <Compile Include="Global.asax.cs">

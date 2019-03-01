@@ -48,7 +48,7 @@ namespace Assignment6.Controllers
         private ActionResult UsersView(string status, string role)
         {
             User loggedUser = Session["user"] as User;
-            DocumentsFactory defaultDocuments = Session[$"{status}Documents"] as DocumentsFactory;
+            var defaultDocuments = Session[$"{status}Documents"] as Dictionary<string,DocumentsRepository>;
 
             if (loggedUser == null || defaultDocuments == null)
             {
@@ -63,7 +63,7 @@ namespace Assignment6.Controllers
                 RoleId = RoleId
             };
 
-            DocumentsManager pendingDocuments = defaultDocuments[role];
+            DocumentsRepository pendingDocuments = defaultDocuments[role];
             userTaskView.Documents = pendingDocuments.Get();
 
 

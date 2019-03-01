@@ -32,10 +32,12 @@ namespace Assignment6.Controllers
                 return View("Index", user);
             }
 
-            Session["user"] = loggedInUser;
-            Session["PendingDocuments"] = new DefaultPendingDocuments(_db,loggedInUser.Id);
-            Session["CompletedDocuments"] = new DefaultCompletedDocuments(_db,loggedInUser.Id);
+            var documents= new DocumentsFactory(_db, loggedInUser.Id);
 
+            Session["user"] = loggedInUser;
+            Session["PendingDocuments"] = documents.GetPending();
+            Session["CompletedDocuments"] = documents.GetCompleted();
+            
             return RedirectToAction("Index", "Home");
         }
 
