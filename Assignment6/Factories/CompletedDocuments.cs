@@ -13,7 +13,9 @@ namespace Assignment6.Factories
         public override IEnumerable<Document> Get()
         {
             return _db.Documents
-                .Get("AssignedToRoleId=@_roleId And PurchasedByUserId=@_userId AND Status='Completed'",
+                .Get("AssignedToRoleId=@_roleId AND " +
+                    "PurchasedByUserId=@_userId AND " +
+                    "Status='Completed'",
                 new
                 {
                     _roleId,

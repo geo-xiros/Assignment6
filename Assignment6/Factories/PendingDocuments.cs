@@ -10,9 +10,9 @@ namespace Assignment6.Factories
     public class AnalystPendingDocuments : DocumentsRepository
     {
         public AnalystPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 1) { }
-        protected override bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> task)
+        protected override bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> assignedDocumentState)
         {
-            return (task.Key == 0);
+            return (assignedDocumentState.Key == 0);
         }
     }
 
@@ -20,10 +20,10 @@ namespace Assignment6.Factories
     {
         public ArchitectPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 2) { }
 
-        protected override bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> task)
+        protected override bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> assignedDocumentState)
         {
-            return (task.Key == (int)Roles.Analyst && (task.Value == DocumentAssignStatus.Completed)) ||
-                   (task.Key == (int)Roles.Architect && task.Value == 0);
+            return (assignedDocumentState.Key == (int)Roles.Analyst && (assignedDocumentState.Value == DocumentAssignStatus.Completed)) ||
+                   (assignedDocumentState.Key == (int)Roles.Architect && assignedDocumentState.Value == 0);
         }
 
     }
@@ -32,11 +32,11 @@ namespace Assignment6.Factories
     {
         public ProgrammerPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 3) { }
 
-        protected override bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> task)
+        protected override bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> assignedDocumentState)
         {
-            return (task.Key == (int)Roles.Analyst && (task.Value == DocumentAssignStatus.Completed || task.Value == DocumentAssignStatus.NotAssigned)) ||
-                   (task.Key == (int)Roles.Architect && (task.Value == DocumentAssignStatus.Completed)) ||
-                   (task.Key == (int)Roles.Programmer && task.Value == DocumentAssignStatus.NotAssigned);
+            return (assignedDocumentState.Key == (int)Roles.Analyst && (assignedDocumentState.Value == DocumentAssignStatus.Completed || assignedDocumentState.Value == DocumentAssignStatus.NotAssigned)) ||
+                   (assignedDocumentState.Key == (int)Roles.Architect && (assignedDocumentState.Value == DocumentAssignStatus.Completed)) ||
+                   (assignedDocumentState.Key == (int)Roles.Programmer && assignedDocumentState.Value == DocumentAssignStatus.NotAssigned);
         }
 
     }
@@ -45,12 +45,12 @@ namespace Assignment6.Factories
     {
         public TesterPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 4) { }
 
-        protected override bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> task)
+        protected override bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> assignedDocumentState)
         {
-            return (task.Key == (int)Roles.Analyst && (task.Value == DocumentAssignStatus.Completed || task.Value == DocumentAssignStatus.NotAssigned)) ||
-                   (task.Key == (int)Roles.Architect && (task.Value == DocumentAssignStatus.Completed || task.Value == DocumentAssignStatus.NotAssigned)) ||
-                   (task.Key == (int)Roles.Programmer && (task.Value == DocumentAssignStatus.Completed)) ||
-                   (task.Key == (int)Roles.Tester && task.Value == DocumentAssignStatus.NotAssigned);
+            return (assignedDocumentState.Key == (int)Roles.Analyst && (assignedDocumentState.Value == DocumentAssignStatus.Completed || assignedDocumentState.Value == DocumentAssignStatus.NotAssigned)) ||
+                   (assignedDocumentState.Key == (int)Roles.Architect && (assignedDocumentState.Value == DocumentAssignStatus.Completed || assignedDocumentState.Value == DocumentAssignStatus.NotAssigned)) ||
+                   (assignedDocumentState.Key == (int)Roles.Programmer && (assignedDocumentState.Value == DocumentAssignStatus.Completed)) ||
+                   (assignedDocumentState.Key == (int)Roles.Tester && assignedDocumentState.Value == DocumentAssignStatus.NotAssigned);
         }
 
     }
