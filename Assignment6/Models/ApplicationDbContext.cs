@@ -13,6 +13,7 @@ namespace Assignment6.Models
     public partial class ApplicationDbContext
     {
         private string _connectionString;
+        public string Error { get; private set; }
         public ApplicationDbContext()
         {
             _connectionString = ConfigurationManager.ConnectionStrings["ApplicationDbContext"].ConnectionString;
@@ -23,8 +24,10 @@ namespace Assignment6.Models
             Documents = new DocumentManager(this);
             DocumentAssigns = new DocumentAssignManager(this);
         }
-        public void UsingConnection(Action<SqlConnection> action)
+        public bool UsingConnection(Action<SqlConnection> action)
         {
+            Error = string.Empty;
+
             try
             {
                 using (SqlConnection sqlConnection = new SqlConnection(_connectionString))
@@ -32,11 +35,12 @@ namespace Assignment6.Models
                     action(sqlConnection);
                 }
             }
-            catch (Exception)
+            catch (System.Data.Common.DbException e)
             {
-
-                throw;
+                Error = e.Message;
             }
+
+            return Error == string.Empty;
         }
 
         public UserManager Users { get; set; }

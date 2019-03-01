@@ -48,7 +48,7 @@ namespace Assignment6.Controllers
         private ActionResult UsersView(string status, string role)
         {
             User loggedUser = Session["user"] as User;
-            var defaultDocuments = Session[$"{status}Documents"] as Dictionary<string,DocumentsRepository>;
+            var defaultDocuments = Session[$"{status}Documents"] as Dictionary<string, DocumentsRepository>;
 
             if (loggedUser == null || defaultDocuments == null)
             {
@@ -116,7 +116,7 @@ namespace Assignment6.Controllers
         [Authorize(Roles = "Architect,Analyst,Programmer,Tester")]
         public ActionResult Complete(int id, int? documentAssignId, int roleId, int userId)
         {
-            if (!_db.DocumentAssigns.Complete(documentAssignId??0,id, userId, roleId))
+            if (!_db.DocumentAssigns.Complete(documentAssignId ?? 0, id, userId, roleId))
             {
                 // TODO 
                 // Update Error Handling
