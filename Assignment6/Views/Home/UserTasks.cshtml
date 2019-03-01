@@ -26,11 +26,6 @@
             <div class="row col-12 my-3 p-3 bg-white rounded shadow-sm">
                 <div class="col-9">
                     <h4>@Html.DisplayFor(modelItem => item.Title)</h4>
-                    @*@if (!ViewBag.Pending)
-                        {
-                            <small class="text-muted">Completed by @Html.DisplayFor(modelItem => item.PurchasedByUser.Username)</small>
-                        }*@
-
                 </div>
                 @if (ViewBag.Pending)
                 {
