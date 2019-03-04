@@ -16,7 +16,7 @@ namespace Assignment6.Controllers
         // POST: api/Document
         [HttpPost]
         [Authorize(Roles = "Architect,Analyst,Programmer,Tester")]
-        public string Post(AddDocumentView documentView)
+        public IHttpActionResult Post(AddDocumentView documentView)
         {
             Document document = _db
                 .Documents
@@ -24,27 +24,26 @@ namespace Assignment6.Controllers
 
             if (document == null)
             {
-                return string.Empty; //return NotFound();
+                return NotFound();
             }
 
             DocumentAssign documentAssign = _db
                 .DocumentAssigns
                 .Add(new DocumentAssign()
-            {
-                DocumentId = document.Id,
-                AssignedToRoleId = documentView.RoleId,
-                PurchasedByUserId = documentView.UserId,
-                Status = "Pending"
-            });
+                {
+                    DocumentId = document.Id,
+                    AssignedToRoleId = documentView.RoleId,
+                    PurchasedByUserId = documentView.UserId,
+                    Status = "Pending"
+                });
 
             if (documentAssign == null)
             {
-                return string.Empty;// NotFound();
+                return  NotFound();
             }
 
             // TODO: return row content using razor.parse
-            return 
-                "<div class=\"row\">" +
+            return Ok("<div class=\"row\">" +
                 "  <div class=\"row col-12 my-3 p-3 bg-white rounded shadow-sm\">" +
                 "    <div class=\"col-9\">" +
                 $"      <h4>{documentView.Title}</h4>" +
@@ -56,7 +55,8 @@ namespace Assignment6.Controllers
                 "      <button class=\"btn btn-info edit-doc ml-2\">View</button>" +
                 "    </div>" +
                 "  </div>" +
-                "</div>";
+                "</div>");
+
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Assignment6.Factories
                 .Get()
                 .Where(d =>
                     d.IsCompletedByRole.Where(DocumentsToPurchase).Count() == _maxCountOfDocumentsForCreteria ||
-                    d.AssignedDocuments.Any(PendingOwnedTasks));
+                    d.AssignedDocuments.Any(PendingAssignedDocuments));
         }
 
         protected virtual bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> task)
@@ -36,7 +36,7 @@ namespace Assignment6.Factories
             return false;
         }
 
-        private bool PendingOwnedTasks(DocumentAssign documentAssign)
+        private bool PendingAssignedDocuments(DocumentAssign documentAssign)
         {
             return documentAssign.AssignedToRoleId == _roleId &&
                 documentAssign.PurchasedByUserId == _userId &&
