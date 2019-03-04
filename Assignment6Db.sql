@@ -68,7 +68,7 @@ CREATE TABLE DocumentAssign(
 )
 go
 
-INSERT INTO [User] (Username,Password) values ('geo.xiros','1234')
+INSERT INTO [User] (Username,Password) values ('manager','1234')
 go
 INSERT INTO Role (Name) Values ('Manager'),('Architect'),('Analyst'),('Programmer'),('Tester')
 go

@@ -163,10 +163,8 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
-    <Compile Include="Factories\ArchitectPendingDocuments.cs" />
-    <Compile Include="Factories\TesterPendingDocuments.cs" />
-    <Compile Include="Factories\ProgrammerPendingDocuments.cs" />
-    <Compile Include="Factories\AnalystPendingDocuments.cs" />
+    <Compile Include="Factories\CompletedDocuments.cs" />
+    <Compile Include="Factories\DocumentsRepository.cs" />
     <Compile Include="Factories\PendingDocuments.cs" />
     <Compile Include="Factories\DocumentsFactory.cs" />
     <Compile Include="Global.asax.cs">
@@ -187,7 +185,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AddDocumentView.cs" />
-    <Compile Include="ViewModels\RegisterUser.cs" />
     <Compile Include="ViewModels\UserTaskView.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -257,8 +254,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
@@ -270,9 +265,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Login\Index.cshtml" />
-    <Content Include="Views\Login\Success.cshtml" />
     <Content Include="Views\Register\Index.cshtml" />
-    <Content Include="Views\Register\Message.cshtml" />
     <Content Include="Views\Partials\_PartialDocAdd.cshtml" />
     <Content Include="Views\Partials\_PartialDocEdit.cshtml" />
   </ItemGroup>

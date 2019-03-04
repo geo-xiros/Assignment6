@@ -6,26 +6,37 @@ using Assignment6.Models;
 
 namespace Assignment6.Factories
 {
-    public class DefaultPendingDocuments
+
+    public class DocumentsFactory
     {
-        public Dictionary<string, PendingDocuments> pendingDocumentsByRole = new Dictionary<string, PendingDocuments>();
-
-        public DefaultPendingDocuments(ApplicationDbContext db, int userId)
+        private ApplicationDbContext _db;
+        private int _userId;
+        public DocumentsFactory(ApplicationDbContext db, int userId)
         {
-
-            pendingDocumentsByRole.Add(Roles.Analyst.ToString(), new AnalystPendingDocuments(db, userId, Roles.Analyst));
-            pendingDocumentsByRole.Add(Roles.Architect.ToString(), new ArchitectPendingDocuments(db, userId, Roles.Architect));
-            pendingDocumentsByRole.Add(Roles.Programmer.ToString(), new ProgrammerPendingDocuments(db, userId, Roles.Programmer));
-            pendingDocumentsByRole.Add(Roles.Tester.ToString(), new TesterPendingDocuments(db, userId, Roles.Tester));
-
+            _db = db;
+            _userId = userId;
         }
-        public PendingDocuments this[string role]
+        public Dictionary<string, DocumentsRepository> GetPending()
         {
-            get
+            return new Dictionary<string, DocumentsRepository>()
             {
-                return pendingDocumentsByRole[role];
-            }
+                { Roles.Analyst.ToString(), new AnalystPendingDocuments(_db, _userId, Roles.Analyst) },
+                { Roles.Architect.ToString(), new ArchitectPendingDocuments(_db, _userId, Roles.Architect) },
+                { Roles.Programmer.ToString(), new ProgrammerPendingDocuments(_db, _userId, Roles.Programmer)},
+                { Roles.Tester.ToString(), new TesterPendingDocuments(_db, _userId, Roles.Tester)}
+            };
+        }
+
+        public Dictionary<string, DocumentsRepository> GetCompleted()
+        {
+            return new Dictionary<string, DocumentsRepository>()
+            {
+                { Roles.Analyst.ToString(), new CompletedDocuments(_db, _userId, Roles.Analyst) },
+                { Roles.Architect.ToString(), new CompletedDocuments(_db, _userId, Roles.Architect) },
+                { Roles.Programmer.ToString(), new CompletedDocuments(_db, _userId, Roles.Programmer)},
+                { Roles.Tester.ToString(), new CompletedDocuments(_db, _userId, Roles.Tester)}
+            };
         }
     }
-
+      
 }

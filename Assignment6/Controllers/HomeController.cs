@@ -31,7 +31,6 @@ namespace Assignment6.Controllers
         public ActionResult Tasks(string status, string role)
         {
 
-
             ViewBag.Title = $"{status} Tasks for {role}";
             ViewBag.Status = status;
             ViewBag.Role = role;
@@ -39,18 +38,19 @@ namespace Assignment6.Controllers
 
             if (role == "Manager")
             {
-                var usersRegistrations = _db
-                    .Registrations
-                    .Get(status == "Pending" ? "RegisteredByUserId Is Null" : "RegisteredByUserId Is Not Null")
-                    .OrderBy(r => r.UserId)
-                    .ThenBy(r => r.RoleId);
-                return View("UsersRegistrations", usersRegistrations);
+                return ManagerView(status);
             }
 
-            User loggedUser = Session["user"] as User;
-            DefaultPendingDocuments defaultPendingDocuments = Session["DefaultPendingDocuments"] as DefaultPendingDocuments;
+            return UsersView(status, role);
 
-            if (loggedUser == null || defaultPendingDocuments == null)
+        }
+
+        private ActionResult UsersView(string status, string role)
+        {
+            User loggedUser = Session["user"] as User;
+            var defaultDocuments = Session[$"{status}Documents"] as Dictionary<string, DocumentsRepository>;
+
+            if (loggedUser == null || defaultDocuments == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -60,31 +60,24 @@ namespace Assignment6.Controllers
             UserTaskView userTaskView = new UserTaskView()
             {
                 UserId = loggedUser.Id,
-                RoleId = loggedUser.Roles.FirstOrDefault(r => r.Name.Equals(role))?.Id ?? 0
+                RoleId = RoleId
             };
 
-            // TODO:
-            // Completed Documents 
-            if (status == "Pending")
-            {
-                PendingDocuments pendingDocuments = defaultPendingDocuments[role];
+            DocumentsRepository pendingDocuments = defaultDocuments[role];
+            userTaskView.Documents = pendingDocuments.Get();
 
-                userTaskView.Documents = pendingDocuments.GetDocuments();
-
-            }
-            else
-            {
-                userTaskView.Documents = _db.Documents
-                    .Get()
-                    .Where(d =>
-                        d.AssignedDocuments.Any(a =>
-                            a.PurchasedByUserId == loggedUser.Id &&
-                            a.AssignedToRoleId == RoleId &&
-                            a.Status == "Completed"));
-            }
 
             return View("UserTasks", userTaskView);
+        }
 
+        private ActionResult ManagerView(string status)
+        {
+            var usersRegistrations = _db
+                .Registrations
+                .Get(status == "Pending" ? "RegisteredByUserId Is Null" : "RegisteredByUserId Is Not Null")
+                .OrderBy(r => r.UserId)
+                .ThenBy(r => r.RoleId);
+            return View("UsersRegistrations", usersRegistrations);
         }
 
         [Authorize(Roles = "Manager")]
@@ -96,6 +89,12 @@ namespace Assignment6.Controllers
             {
                 // TODO 
                 // Error Handling
+                return Redirect(Request.UrlReferrer.ToString());
+            }
+
+            if (_db.Registrations.Find(id ?? 0, out Registration registration))
+            {
+                _db.Users.AddUserRole(registration.UserId, registration.RoleId);
             }
 
             return Redirect(Request.UrlReferrer.ToString());
@@ -117,7 +116,7 @@ namespace Assignment6.Controllers
         [Authorize(Roles = "Architect,Analyst,Programmer,Tester")]
         public ActionResult Complete(int id, int? documentAssignId, int roleId, int userId)
         {
-            if (!_db.DocumentAssigns.Complete(documentAssignId??0,id, userId, roleId))
+            if (!_db.DocumentAssigns.Complete(documentAssignId ?? 0, id, userId, roleId))
             {
                 // TODO 
                 // Update Error Handling

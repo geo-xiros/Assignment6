@@ -7,38 +7,51 @@ using Assignment6.Models;
 namespace Assignment6.Factories
 {
 
-    public abstract class PendingDocuments
+    public class AnalystPendingDocuments : DocumentsRepository
     {
-        protected ApplicationDbContext _db;
-        protected int _userId;
-        protected int _role;
-        protected int _maxCountOfDocumentsForCreteria;
-
-        public PendingDocuments(ApplicationDbContext db, int userId, Roles role, int maxCountOfDocumentsForCreteria)
+        public AnalystPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 1) { }
+        protected override bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> assignedDocumentState)
         {
-            _db = db;
-            _userId = userId;
-            _role = (int)role;
-            _maxCountOfDocumentsForCreteria = maxCountOfDocumentsForCreteria;
-        }
-
-        public IEnumerable<Document> GetDocuments()
-        {
-            return _db.Documents
-                .Get()
-                .Where(d =>
-                    d.IsCompletedByRole.Where(CompletedDocuments).Count() == _maxCountOfDocumentsForCreteria ||
-                    d.AssignedDocuments.Any(PendingOwnedTasks));
-        }
-
-        protected abstract bool CompletedDocuments(KeyValuePair<int, int> task);
-
-        private bool PendingOwnedTasks(DocumentAssign documentAssign)
-        {
-            return documentAssign.AssignedToRoleId == _role &&
-                documentAssign.PurchasedByUserId == _userId &&
-                documentAssign.Status == "Pending";
+            return (assignedDocumentState.Key == 0);
         }
     }
 
+    public class ArchitectPendingDocuments : DocumentsRepository
+    {
+        public ArchitectPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 2) { }
+
+        protected override bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> assignedDocumentState)
+        {
+            return (assignedDocumentState.Key == (int)Roles.Analyst && (assignedDocumentState.Value == DocumentAssignStatus.Completed)) ||
+                   (assignedDocumentState.Key == (int)Roles.Architect && assignedDocumentState.Value == 0);
+        }
+
+    }
+
+    public class ProgrammerPendingDocuments : DocumentsRepository
+    {
+        public ProgrammerPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 3) { }
+
+        protected override bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> assignedDocumentState)
+        {
+            return (assignedDocumentState.Key == (int)Roles.Analyst && (assignedDocumentState.Value == DocumentAssignStatus.Completed || assignedDocumentState.Value == DocumentAssignStatus.NotAssigned)) ||
+                   (assignedDocumentState.Key == (int)Roles.Architect && (assignedDocumentState.Value == DocumentAssignStatus.Completed)) ||
+                   (assignedDocumentState.Key == (int)Roles.Programmer && assignedDocumentState.Value == DocumentAssignStatus.NotAssigned);
+        }
+
+    }
+    
+    public class TesterPendingDocuments : DocumentsRepository
+    {
+        public TesterPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 4) { }
+
+        protected override bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> assignedDocumentState)
+        {
+            return (assignedDocumentState.Key == (int)Roles.Analyst && (assignedDocumentState.Value == DocumentAssignStatus.Completed || assignedDocumentState.Value == DocumentAssignStatus.NotAssigned)) ||
+                   (assignedDocumentState.Key == (int)Roles.Architect && (assignedDocumentState.Value == DocumentAssignStatus.Completed || assignedDocumentState.Value == DocumentAssignStatus.NotAssigned)) ||
+                   (assignedDocumentState.Key == (int)Roles.Programmer && (assignedDocumentState.Value == DocumentAssignStatus.Completed)) ||
+                   (assignedDocumentState.Key == (int)Roles.Tester && assignedDocumentState.Value == DocumentAssignStatus.NotAssigned);
+        }
+
+    }
 }
