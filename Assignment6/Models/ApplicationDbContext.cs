@@ -7,12 +7,14 @@ using System.Configuration;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using Dapper;
+using System.Data.Common;
 
 namespace Assignment6.Models
 {
     public partial class ApplicationDbContext
     {
         private string _connectionString;
+        private string _connectionStringMaster { get => _connectionString.Replace("Assignment6DB", "master"); }
         public ApplicationDbContext()
         {
             _connectionString = ConfigurationManager.ConnectionStrings["ApplicationDbContext"].ConnectionString;
@@ -22,6 +24,30 @@ namespace Assignment6.Models
             Registrations = new RegistrationManager(this);
             Documents = new DocumentManager(this);
             DocumentAssigns = new DocumentAssignManager(this);
+            if (!DatabaseExists())
+            {
+                CreateDatabase();
+            }
+        }
+        private void CreateDatabase()
+        {
+
+        }
+        private bool DatabaseExists()
+        {
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(_connectionStringMaster))
+                {
+                    sqlConnection.Execute("USE Assignment6DB");
+                }
+                return true;
+            }
+            catch (DbException)
+            {
+                return false;
+            }
+
         }
         public void UsingConnection(Action<SqlConnection> action)
         {
