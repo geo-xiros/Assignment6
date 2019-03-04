@@ -26,12 +26,41 @@ namespace Assignment6.Models
             DocumentAssigns = new DocumentAssignManager(this);
             if (!DatabaseExists())
             {
-                CreateDatabase();
+                if (CreateDatabase())
+                {
+                    CreateDbSchema();
+                }
             }
         }
-        private void CreateDatabase()
+        private void CreateDbSchema()
         {
-
+            UsingConnection((dbCon)=>{
+                dbCon.Execute(" CREATE TABLE[User] (Id int identity(1,1) not null,	Username varchar(50) not null,	Password varchar(50) not null,	constraint PK_User primary key(Id))");
+                dbCon.Execute("CREATE TABLE Role(Id int Identity(1, 1) not null, Name varchar(50) not null, constraint PK_Role Primary key(Id))");
+                dbCon.Execute("CREATE UNIQUE INDEX IX_RoleNameUnique on Role(Name)");
+                dbCon.Execute("CREATE TABLE UserRoles(UserId int not null,RoleId int not null,constraint PK_UserRoles primary key(UserId, RoleId),constraint FK_UserRolesUserId foreign key(UserId) references[User](Id),constraint FK_UserRolesRoleId foreign key(RoleId) references Role(Id))");
+                dbCon.Execute("CREATE TABLE Registration(Id int Identity(1,1) not null,	UserId int not null,	RoleId int not null,	RegisteredByUserId int null,	Status varchar(10) not null,	constraint PK_Registration primary key(Id),	constraint FK_RegistrationUserId foreign key(UserId) references[User](Id),	constraint FK_RegistrationRegisteredByUserId foreign key(RegisteredByUserId) references[User](Id),	constraint FK_RegistrationRoleId foreign key(RoleId) references Role(Id))");
+                dbCon.Execute("CREATE TABLE Document(Id int Identity(1, 1) not null, Title varchar(50) not null, Body Text null, constraint PK_Document Primary key(Id))");
+                dbCon.Execute("CREATE TABLE DocumentAssign(Id int identity(1,1) not null,	DocumentId int not null,	AssignedToRoleId int not null,	PurchasedByUserId int null,	Status varchar(20) not null,	constraint PK_DocumentAssign primary key(Id),	constraint FK_DocumentAssignDocumentId foreign key(DocumentId) references Document(Id),	constraint FK_DocumentAssignPurchasedByUserId foreign key(PurchasedByUserId) references[User](Id),	constraint FK_DocumentAssignAssignedToRoleId foreign key(AssignedToRoleId) references Role(Id))");
+                dbCon.Execute("INSERT INTO[User](Username, Password) values('geo.xiros', '1234')");
+                dbCon.Execute("INSERT INTO Role(Name) Values('Manager'),('Architect'),('Analyst'),('Programmer'),('Tester')");
+                dbCon.Execute("INSERT INTO UserRoles(UserId, RoleId) VALUES(1, 1)");
+            });
+        }
+        private bool CreateDatabase()
+        {
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(_connectionStringMaster))
+                {
+                    sqlConnection.Execute("CREATE DATABASE Assignment6DB");
+                }
+                return true;
+            }
+            catch (DbException)
+            {
+                return false;
+            }
         }
         private bool DatabaseExists()
         {
