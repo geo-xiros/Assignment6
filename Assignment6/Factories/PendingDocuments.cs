@@ -10,10 +10,6 @@ namespace Assignment6.Factories
     public class AnalystPendingDocuments : DocumentsRepository
     {
         public AnalystPendingDocuments(ApplicationDbContext db, int userId, Roles role) : base(db, userId, role, 1) { }
-        protected override bool DocumentsToPurchase(KeyValuePair<int, DocumentAssignStatus> assignedDocumentState)
-        {
-            return (assignedDocumentState.Key == 0);
-        }
     }
 
     public class ArchitectPendingDocuments : DocumentsRepository
