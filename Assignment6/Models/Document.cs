@@ -5,7 +5,7 @@ namespace Assignment6.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class Document : IEqualityComparer<Document>
+    public class Document
     {
         public Dictionary<int, DocumentAssignStatus> IsCompletedByRole { get; set; }
 
@@ -28,15 +28,6 @@ namespace Assignment6.Models
         public string Body { get; set; }
         public List<DocumentAssign> AssignedDocuments { get; set; }
 
-        public bool Equals(Document x, Document y)
-        {
-            return x.Id == y.Id;
-        }
-
-        public int GetHashCode(Document obj)
-        {
-            return obj.Id.GetHashCode();
-        }
     }
     public enum DocumentAssignStatus
     {
