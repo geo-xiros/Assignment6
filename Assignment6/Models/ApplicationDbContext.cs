@@ -13,18 +13,12 @@ namespace Assignment6.Models
 {
     public partial class ApplicationDbContext
     {
-        private string _connectionString;
-        private string _connectionStringMaster { get => _connectionString.Replace("Assignment6DB", "master"); }
-        public string Error { get; private set; }
-        public ApplicationDbContext()
+        private static string _connectionString;
+        private static string _connectionStringMaster { get => _connectionString.Replace("Assignment6DB", "master"); }
+        public static string Error { get; private set; }
+        static ApplicationDbContext()
         {
             _connectionString = ConfigurationManager.ConnectionStrings["ApplicationDbContext"].ConnectionString;
-
-            Users = new UserManager(this);
-            Roles = new RoleManager(this);
-            Registrations = new RegistrationManager(this);
-            Documents = new DocumentManager(this);
-            DocumentAssigns = new DocumentAssignManager(this);
             if (!DatabaseExists())
             {
                 if (CreateDatabase())
@@ -33,9 +27,21 @@ namespace Assignment6.Models
                 }
             }
         }
-        private void CreateDbSchema()
+        public ApplicationDbContext()
         {
-            UsingConnection((dbCon)=>{
+            Users = new UserManager(this);
+            Roles = new RoleManager(this);
+            Registrations = new RegistrationManager(this);
+            Documents = new DocumentManager(this);
+            DocumentAssigns = new DocumentAssignManager(this);
+
+        }
+        private static void CreateDbSchema()
+        {
+            var db = new ApplicationDbContext();
+            // TODO 
+            // using fluentmigrator
+            db.UsingConnection((dbCon)=>{
                 dbCon.Execute("CREATE TABLE [User] (Id int identity(1,1) not null,Username varchar(50) not null,	Password varchar(50) not null,	constraint PK_User primary key (Id))");
                 dbCon.Execute("CREATE TABLE Role (Id int Identity(1,1) not null,Name varchar(50) not null,	constraint PK_Role Primary key (Id))");
                 dbCon.Execute("CREATE UNIQUE INDEX IX_RoleNameUnique on Role(Name)");
@@ -48,7 +54,7 @@ namespace Assignment6.Models
                 dbCon.Execute("INSERT INTO UserRoles (userId, RoleId) SELECT U.Id, R.Id FROM (SELECT Id FROM [USER] WHERE Username = 'Manager') AS U, (SELECT Id FROM [Role] WHERE Name='Manager') R");
             });
         }
-        private bool CreateDatabase()
+        private static bool CreateDatabase()
         {
             try
             {
@@ -63,7 +69,7 @@ namespace Assignment6.Models
                 return false;
             }
         }
-        private bool DatabaseExists()
+        private static bool DatabaseExists()
         {
             try
             {
