@@ -45,7 +45,7 @@ namespace Assignment6.Models
                 dbCon.Execute("CREATE TABLE DocumentAssign(	Id int identity(1,1) not null,	DocumentId int not null,	AssignedToRoleId int not null,	PurchasedByUserId int null,	Status varchar(20) not null,	constraint PK_DocumentAssign primary key (Id),	constraint FK_DocumentAssignDocumentId foreign key (DocumentId) references Document(Id),	constraint FK_DocumentAssignPurchasedByUserId foreign key (PurchasedByUserId) references [User](Id),	constraint FK_DocumentAssignAssignedToRoleId foreign key (AssignedToRoleId) references Role(Id))");
                 dbCon.Execute("INSERT INTO [User] (Username,Password) values ('manager','1234')");
                 dbCon.Execute("INSERT INTO Role (Name) Values ('Manager'),('Architect'),('Analyst'),('Programmer'),('Tester')");
-                dbCon.Execute("INSERT INTO UserRoles (UserId, RoleId) VALUES (1, 1)");
+                dbCon.Execute("INSERT INTO UserRoles (userId, RoleId) SELECT U.Id, R.Id FROM (SELECT Id FROM [USER] WHERE Username = 'Manager') AS U, (SELECT Id FROM [Role] WHERE Name='Manager') R");
             });
         }
         private bool CreateDatabase()
