@@ -108,8 +108,8 @@ namespace Assignment6.Models
             // If that is not current user AssignedDocument record then
             // create a new one purchashed by current user and role
             // with completed status
-            if (documentAssign.Status == "Completed" && 
-                documentAssign.PurchasedByUserId != byUserId)
+            if ((documentAssign.Status == "Completed" && documentAssign.PurchasedByUserId != byUserId) ||
+                (documentAssign.Status == "Completed" && documentAssign.AssignedToRoleId != roleId))
             {
                 return Add(new DocumentAssign()
                 {
