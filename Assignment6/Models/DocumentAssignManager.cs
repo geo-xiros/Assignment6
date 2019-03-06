@@ -63,41 +63,6 @@ namespace Assignment6.Models
             return documentAssigns;
         }
 
-
-        public bool CompletedBy(int id, int userId)
-        {
-            int affectedRows = 0;
-
-            _db.UsingConnection((dbCon) =>
-            {
-                affectedRows = dbCon.Execute("UPDATE DocumentAssign SET " +
-                    "[PurchasedByUserId]=@userId, [Status]=@status " +
-                    "WHERE Id = @id AND (PurchasedByUserId Is Null OR PurchasedByUserId=@userId)", new
-                    {
-                        status = "Completed",
-                        userId,
-                        id
-                    });
-            });
-
-            return affectedRows != 0;
-        }
-
-        public bool ForwardToNextRole(int id, int assignToRoleId)
-        {
-            int affectedRows = 0;
-            _db.UsingConnection((dbCon) =>
-            {
-                affectedRows = dbCon.Execute("INSERT INTO DocumentAssign ([DocumentId], [AssignedToRoleId], [Status]) " +
-                    "SELECT [DocumentId], @assignToRoleId AS AssignedToRoleId, 'Pending' AS Status FROM DocumentAssign " +
-                    "WHERE Id = @Id ", new
-                    {
-                        assignToRoleId,
-                        id
-                    });
-            });
-            return affectedRows != 0;
-        }
         public bool Complete(int id, int documentId, int byUserId, int roleId)
         {
             if (!Find(id, out DocumentAssign documentAssign))
